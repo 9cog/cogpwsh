@@ -176,7 +176,9 @@ class Link : Atom {
     Link([AtomType]$type, [Atom[]]$outgoing) : base($type) {
         $this.Outgoing = [System.Collections.Generic.List[Atom]]::new()
         foreach ($atom in $outgoing) {
-            $this.Outgoing.Add($atom)
+            if ($null -ne $atom) {
+                $this.Outgoing.Add($atom)
+            }
         }
     }
     
