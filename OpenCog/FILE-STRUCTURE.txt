@@ -1,0 +1,107 @@
+OpenCog PowerShell Implementation - File Structure
+===================================================
+
+OpenCog/
+├── OpenCog.psm1 (1,780 bytes)
+│   Main module file - imports and exports all core functions
+│   Integrates: Atoms, AtomSpace, PatternMatcher modules
+│
+├── OpenCog.psd1 (5,863 bytes)
+│   Module manifest with metadata
+│   Exports: 26 functions
+│   Version: 1.0.0
+│
+├── Core/
+│   ├── Atoms.psm1 (10,910 bytes)
+│   │   • Enum: AtomType (13 types)
+│   │   • Class: TruthValue (strength + confidence)
+│   │   • Class: Atom (base class)
+│   │   • Class: Node (named atoms)
+│   │   • Class: Link (relational atoms)
+│   │   • Functions: 10 factory functions
+│   │       - New-ConceptNode, New-PredicateNode, New-VariableNode
+│   │       - New-InheritanceLink, New-SimilarityLink, New-EvaluationLink
+│   │       - New-ListLink, New-AndLink, New-OrLink, New-ImplicationLink
+│   │
+│   ├── AtomSpace.psm1 (13,773 bytes)
+│   │   • Class: AtomSpace (hypergraph storage)
+│   │   • Indexes: by handle, type, name, incoming/outgoing
+│   │   • Functions: 10 AtomSpace operations
+│   │       - New-AtomSpace, Add-Atom, Get-Atom, Get-AtomsByType
+│   │       - Get-Node, Get-IncomingSet, Remove-Atom, Clear-AtomSpace
+│   │       - Get-AtomSpaceStatistics, Export-AtomSpace
+│   │
+│   └── PatternMatcher.psm1 (13,580 bytes)
+│       • Class: PatternMatcher (query engine)
+│       • Class: QueryBuilder (complex queries)
+│       • Functions: 6 query functions
+│           - New-PatternMatcher, Find-Pattern, New-QueryBuilder
+│           - Find-AtomsByPredicate, Get-MatchResults, Invoke-Query
+│
+├── Examples/
+│   ├── QuickDemo.ps1 (5,489 bytes)
+│   │   Concise demonstration of core functionality
+│   │   - Creating atoms and AtomSpace
+│   │   - Building relationships
+│   │   - Querying knowledge base
+│   │   - Pattern matching
+│   │   - Truth values
+│   │   - Properties with predicates
+│   │
+│   ├── BasicUsage.ps1 (7,672 bytes)
+│   │   Comprehensive examples (8 sections)
+│   │   - Atom creation
+│   │   - AtomSpace building
+│   │   - Querying
+│   │   - Pattern matching
+│   │   - Complex patterns
+│   │   - Truth value operations
+│   │   - Statistics and export
+│   │   - Query builder
+│   │
+│   └── KnowledgeGraph.ps1 (10,208 bytes)
+│       Advanced knowledge graph example
+│       - Building ontologies
+│       - Programming language knowledge base
+│       - Multiple paradigms and relationships
+│       - Complex queries and filters
+│       - Multi-paradigm language detection
+│
+├── Tests/
+│   └── OpenCog.Tests.ps1 (11,467 bytes)
+│       Comprehensive test suite
+│       - 10 test sections
+│       - 67 total tests
+│       - 58 passing (87% pass rate)
+│       - Custom test framework
+│       Covers: atoms, truth values, AtomSpace, links,
+│                pattern matching, queries, statistics
+│
+├── README.md (12,672 bytes)
+│   Complete module documentation
+│   - Overview and features
+│   - Architecture description
+│   - Quick start guide
+│   - Core concepts explained
+│   - Full API reference
+│   - Usage examples
+│   - Testing instructions
+│   - Technical details
+│
+├── IMPLEMENTATION-SUMMARY.md (6,097 bytes)
+│   Implementation summary
+│   - What was created
+│   - Features implemented
+│   - Code statistics
+│   - Test results
+│   - Key accomplishments
+│
+└── test-import.ps1 (303 bytes)
+    Helper script for testing module import
+
+Total Files: 12
+Total Size: ~100 KB
+Lines of Code: ~3,250
+Functions Exported: 26
+Classes: 7
+Enums: 1
