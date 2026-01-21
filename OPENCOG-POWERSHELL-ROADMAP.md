@@ -13,7 +13,7 @@ This roadmap outlines the comprehensive development plan for implementing the co
 - ✅ Basic Examples and Tests
 - ✅ Module Structure (OpenCog.psm1, OpenCog.psd1)
 
-**Implementation Progress**: ~7% of total OpenCog architecture (Phase 1 of 15 phases complete = 1/15 ≈ 6.7%, rounded to 7%)
+**Implementation Progress**: ~7% of total OpenCog architecture (Phase 1 of 15 complete)
 
 ---
 
@@ -1115,11 +1115,11 @@ OpenCog/
 
 ### Code Metrics
 - **Total Modules**: 50+ PowerShell modules
-- **Lines of Code**: 150,000-200,000 lines (estimated based on ~3,000 lines per module average)
+- **Lines of Code**: 150,000-200,000 lines (estimated based on ~3,250 lines per module average)
 - **Test Coverage**: >80% across all modules
 - **Documentation Coverage**: 100% of public functions
 
-**Note**: Line count estimate based on current implementation averaging ~3,250 lines for 4 modules. With 50+ modules at similar complexity, total estimated at 150K-200K lines rather than C++ OpenCog's larger codebase.
+**Note**: Line count estimate based on current Phase 1 implementation averaging 3,250 lines for 4 modules. With 50+ modules at similar complexity, total estimated at 150K-200K lines.
 
 ### Functional Metrics
 - **Atom Types**: 50+ types implemented
@@ -1165,15 +1165,10 @@ OpenCog/
 
 This roadmap provides a comprehensive plan for implementing the complete OpenCog cognitive architecture in pure PowerShell. With 15 phases spanning 7 major epics, the implementation will deliver a production-ready AGI framework accessible to the PowerShell community.
 
-**Current Status**: Phase 1 Complete (~7% of total implementation, based on phase completion)
+**Current Status**: Phase 1 Complete (~7% of total)
 **Next Milestone**: Phase 2 - Extended Atom Types (Q1 2026)
 **Estimated Completion**: Version 1.0.0 (Q4 2027 - subject to resource availability and complexity adjustments)
 
-**Note on Timeline**: The 2-year estimate assumes consistent development effort. Actual timeline may vary based on:
-- Development resource availability
-- Complexity encountered during implementation
-- Testing and validation requirements
-- Community contributions and feedback
-- Integration challenges with advanced components
+**Note on Timeline**: The 2-year estimate assumes consistent development effort. Actual timeline may vary based on resource availability, complexity encountered, testing requirements, community contributions, and integration challenges.
 
 The modular design allows for incremental delivery, with each phase providing valuable functionality while building toward the complete vision of OpenCog in PowerShell.
