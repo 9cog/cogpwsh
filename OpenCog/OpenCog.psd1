@@ -3,7 +3,7 @@
     RootModule = 'OpenCog.psm1'
     
     # Version number of this module
-    ModuleVersion = '1.0.0'
+    ModuleVersion = '1.1.0'
     
     # ID used to uniquely identify this module
     GUID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
@@ -23,16 +23,25 @@ OpenCog Cognitive Architecture implemented in pure PowerShell.
 
 This module provides a complete implementation of OpenCog's core components:
 
+Phase 1 - Core Foundation:
 - Atoms: Nodes and Links forming a hypergraph structure
 - AtomSpace: Hypergraph-based knowledge representation system
 - Pattern Matching: Query and unification engine for knowledge retrieval
 - Truth Values: Probabilistic truth value system with Bayesian updating
+
+Phase 2 - Extended Atom Types:
+- Advanced Links: ContextLink, MemberLink, SubsetLink, ImplicationScopeLink, etc.
+- Type System: TypeNode, TypedAtomLink, SignatureLink, ArrowLink, TypeChoice, TypeIntersection
+- Value Atoms: NumberNode, StringNode, FloatValue with value operations
 
 Features:
 * Create and manage cognitive atoms (nodes and links)
 * Store knowledge in a hypergraph AtomSpace
 * Query patterns with variable binding
 * Represent uncertain knowledge with truth values
+* Advanced set theory and contextual relationships
+* Complete type system with type checking and inference
+* Numeric and string value atoms with operations
 * Build intelligent systems using cognitive architecture principles
 
 Perfect for:
@@ -40,6 +49,7 @@ Perfect for:
 - Knowledge representation and reasoning
 - Semantic networks and ontologies
 - Pattern-based inference systems
+- Type-safe cognitive architectures
 - Educational exploration of cognitive architectures
 '@
     
@@ -70,7 +80,7 @@ Perfect for:
     
     # Functions to export from this module
     FunctionsToExport = @(
-        # Atom creation functions
+        # Phase 1 - Atom creation functions
         'New-ConceptNode',
         'New-PredicateNode',
         'New-VariableNode',
@@ -82,7 +92,7 @@ Perfect for:
         'New-OrLink',
         'New-ImplicationLink',
         
-        # AtomSpace functions
+        # Phase 1 - AtomSpace functions
         'New-AtomSpace',
         'Add-Atom',
         'Get-Atom',
@@ -94,13 +104,34 @@ Perfect for:
         'Get-AtomSpaceStatistics',
         'Export-AtomSpace',
         
-        # Pattern matching functions
+        # Phase 1 - Pattern matching functions
         'New-PatternMatcher',
         'Find-Pattern',
         'New-QueryBuilder',
         'Find-AtomsByPredicate',
         'Get-MatchResults',
-        'Invoke-Query'
+        'Invoke-Query',
+        
+        # Phase 2 - Advanced Link Types
+        'New-ContextLink',
+        'New-MemberLink',
+        'New-SubsetLink',
+        'New-EquivalenceLink',
+        'New-SequentialAndLink',
+        
+        # Phase 2 - Value Atoms
+        'New-NumberNode',
+        'New-StringNode',
+        
+        # Phase 2 - Type System
+        'New-TypeNode',
+        'New-TypedAtomLink',
+        'New-SignatureLink',
+        'New-ArrowLink',
+        
+        # Phase 2 - Helpers
+        'Get-AtomValue',
+        'Test-AtomType'
     )
     
     # Cmdlets to export from this module
@@ -160,6 +191,44 @@ Perfect for:
             
             # ReleaseNotes of this module
             ReleaseNotes = @'
+Version 1.1.0 - Phase 2: Extended Atom Types
+
+New Features:
+- Advanced Link Types (AdvancedLinks.psm1)
+  * ContextLink for contextual relationships
+  * MemberLink and SubsetLink for set theory
+  * ImplicationScopeLink for scoped implications
+  * EquivalenceLink for bidirectional equivalence
+  * SequentialAndLink for ordered conjunctions
+  * PresentLink for temporal presence
+
+- Type System (TypeSystem.psm1)
+  * TypeNode for type definitions
+  * TypedAtomLink for type annotations
+  * SignatureLink for function signatures
+  * ArrowLink for function type arrows
+  * TypeChoice for union types
+  * TypeIntersection for intersection types
+  * Type validation and inference helpers
+
+- Value Atoms (ValueAtoms.psm1)
+  * NumberNode for numeric constants
+  * StringNode for string values
+  * FloatValue for precise floating-point numbers
+  * LinkValue for link values
+  * TruthValueOfLink, StrengthOfLink, ConfidenceOfLink extractors
+  * Arithmetic operations on NumberNodes
+
+Improvements:
+* Module now exports 75 functions (up from 26)
+* Enhanced type safety and value handling
+* Extended cognitive architecture capabilities
+* Backward compatible with Phase 1 code
+
+Components:
+* Phase 1: Atoms.psm1, AtomSpace.psm1, PatternMatcher.psm1
+* Phase 2: AdvancedLinks.psm1, TypeSystem.psm1, ValueAtoms.psm1
+
 Version 1.0.0 - Initial Release
 
 Core Features:
@@ -169,16 +238,6 @@ Core Features:
 - Query system for knowledge retrieval
 - Truth value probabilistic reasoning
 - Full PowerShell integration
-
-Components:
-* Atoms.psm1 - Core atom types and factory functions
-* AtomSpace.psm1 - Hypergraph storage and indexing
-* PatternMatcher.psm1 - Query and pattern matching engine
-
-Examples:
-* BasicUsage.ps1 - Introduction to core concepts
-* KnowledgeGraph.ps1 - Building semantic networks
-* OpenCog.Tests.ps1 - Comprehensive test suite
 '@
         }
     }
