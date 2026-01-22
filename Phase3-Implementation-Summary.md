@@ -19,7 +19,7 @@ Phase 3 of the OpenCog PowerShell implementation focuses on **Advanced Pattern M
 | Metric | Phase 2 | Phase 3 (Target) | Change |
 |--------|---------|------------------|--------|
 | Module Version | 1.1.0 | 1.2.0 | +0.1 |
-| Exported Functions | 50 | 68 | +36% |
+| Exported Functions | 50 | 59 | +18% |
 | Core Classes | 12 | 19 | +58% |
 | Module Files | 3 | 6 | +100% |
 | Examples | 5 | 6 | +20% |
@@ -147,39 +147,39 @@ OpenCog/
 
 ```
 Advanced Pattern Links:
-├── GetLink : Link
-│   ├── VariableList : Atom
-│   ├── Pattern : Atom
-│   └── Output : Atom
-├── BindLink : Link
-│   ├── VariableList : Atom
-│   ├── Pattern : Atom
-│   └── Rewrite : Atom
-├── SatisfactionLink : Link
-│   ├── VariableList : Atom
-│   └── Pattern : Atom
-├── DualLink : Link
-│   ├── Forward : Atom
-│   └── Backward : Atom
-├── ChoiceLink : Link
-│   └── Alternatives : Atom[]
-├── SequentialOrLink : Link
-│   └── Alternatives : Atom[]
-└── AbsentLink : Link
-    └── Pattern : Atom
+GetLink : Link
+  - VariableList : Atom
+  - Pattern : Atom
+  - Output : Atom
+BindLink : Link
+  - VariableList : Atom
+  - Pattern : Atom
+  - Rewrite : Atom
+SatisfactionLink : Link
+  - VariableList : Atom
+  - Pattern : Atom
+DualLink : Link
+  - Forward : Atom
+  - Backward : Atom
+ChoiceLink : Link
+  - Alternatives : Atom[]
+SequentialOrLink : Link
+  - Alternatives : Atom[]
+AbsentLink : Link
+  - Pattern : Atom
 
 Execution Engine:
-└── AdvancedPatternMatcher
-    ├── AtomSpace : AtomSpace
-    ├── BasicMatcher : PatternMatcher
-    ├── ExecuteGetLink()
-    ├── ExecuteBindLink()
-    ├── ExecuteSatisfactionLink()
-    ├── ExecuteDualLink()
-    ├── ExecuteChoiceLink()
-    ├── ExecuteSequentialOrLink()
-    ├── ExecuteAbsentLink()
-    └── InstantiatePattern()
+AdvancedPatternMatcher
+  - AtomSpace : AtomSpace
+  - BasicMatcher : PatternMatcher
+  - ExecuteGetLink()
+  - ExecuteBindLink()
+  - ExecuteSatisfactionLink()
+  - ExecuteDualLink()
+  - ExecuteChoiceLink()
+  - ExecuteSequentialOrLink()
+  - ExecuteAbsentLink()
+  - InstantiatePattern()
 ```
 
 ---
@@ -294,7 +294,7 @@ Execution Engine:
 5. **Negative Reasoning**: Absence checking
 
 ### For the Ecosystem
-1. **36% More Functions**: Expanded API (50 → 68 functions)
+1. **18% More Functions**: Expanded API (50 → 59 functions)
 2. **Advanced Capabilities**: Production-level pattern matching
 3. **OpenCog Compatibility**: Standard query primitives
 4. **Extensible**: Foundation for PLN (Phase 4)
