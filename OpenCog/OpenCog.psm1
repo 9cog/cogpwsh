@@ -21,13 +21,10 @@
 # Import core modules
 $CorePath = Join-Path $PSScriptRoot "Core"
 
-# Core modules (Phase 1 + Phase 2 integrated)
+# Core modules (Phase 1 + Phase 2 + Phase 3 integrated)
 Import-Module (Join-Path $CorePath "Atoms.psm1") -Force
 Import-Module (Join-Path $CorePath "AtomSpace.psm1") -Force
 Import-Module (Join-Path $CorePath "PatternMatcher.psm1") -Force
-
-# Phase 3 - Advanced Pattern Matching
-Import-Module (Join-Path $CorePath "AdvancedPatternMatcher.psm1") -Force
 
 # Re-export all functions from core modules
 $ExportedFunctions = @(
@@ -113,8 +110,8 @@ $ExportedFunctions = @(
     'New-ChoiceLink',
     'New-SequentialOrLink',
     'New-AbsentLink',
-    'New-AdvancedPatternMatcher',
-    'Invoke-AdvancedPattern'
+    'Invoke-AdvancedPattern',
+    'Invoke-PatternInstantiation'
 )
 
 Export-ModuleMember -Function $ExportedFunctions
