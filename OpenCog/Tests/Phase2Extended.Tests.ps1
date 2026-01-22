@@ -1,4 +1,10 @@
 # Phase 2 Extended Features Test Suite
+# Tests comprehensive Phase 2 extended features including:
+# - Extended value atoms (FloatValue, LinkValue)
+# - Type system extensions (TypeChoice, TypeIntersection)
+# - Additional advanced links (ImplicationScopeLink, PresentLink)
+# - Value extractors (Get-TruthValueOf, Get-StrengthOf, Get-ConfidenceOf)
+# - Type system helpers (Test-TypeCompatibility, Get-TypeHierarchy)
 
 # Import module
 Import-Module "$PSScriptRoot/../OpenCog.psd1" -Force

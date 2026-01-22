@@ -1,5 +1,18 @@
 # Phase 2 Extended Features - Comprehensive Demonstration
 # OpenCog PowerShell - Advanced Type System, Value Atoms, and Links
+#
+# Version: 1.1.0
+# Requirements: PowerShell 5.1+
+# Dependencies: OpenCog.psd1 module
+#
+# This demo showcases all Phase 2 extended features including:
+# - Extended value atoms (FloatValue, LinkValue)
+# - Union and intersection types (TypeChoice, TypeIntersection)
+# - Scoped logical rules (ImplicationScopeLink)
+# - Temporal presence (PresentLink)
+# - Truth value extractors
+# - Type hierarchy querying
+# - Complex type-safe function signatures
 
 # Import the OpenCog module
 Import-Module "$PSScriptRoot/../OpenCog.psd1" -Force
