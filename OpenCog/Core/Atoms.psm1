@@ -442,8 +442,342 @@ function New-ImplicationLink {
     return $link
 }
 
+#
+# Phase 2 - Extended Atom Types
+#
+
+# Advanced Node Types
+
+class NumberNode : Node {
+    [double]$Value
+    
+    NumberNode([double]$value) : base([AtomType]::ConceptNode, $value.ToString()) {
+        $this.Value = $value
+        $this.SetMetadata('NodeSubType', 'NumberNode')
+    }
+    
+    [double] GetValue() { return $this.Value }
+}
+
+class StringNode : Node {
+    StringNode([string]$value) : base([AtomType]::ConceptNode, $value) {
+        $this.SetMetadata('NodeSubType', 'StringNode')
+    }
+}
+
+class TypeNode : Node {
+    TypeNode([string]$typeName) : base([AtomType]::ConceptNode, $typeName) {
+        $this.SetMetadata('NodeSubType', 'TypeNode')
+        $this.SetMetadata('IsType', $true)
+    }
+}
+
+# Phase 2 - Advanced Link Factory Functions
+
+function New-ContextLink {
+    <#
+    .SYNOPSIS
+        Creates a ContextLink for contextual relationships
+    .PARAMETER Context
+        The context atom
+    .PARAMETER Atom
+        The atom within this context
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Context,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Atom,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Context, $Atom))
+    $link.SetMetadata('LinkSubType', 'ContextLink')
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+function New-MemberLink {
+    <#
+    .SYNOPSIS
+        Creates a MemberLink for set membership
+    .PARAMETER Element
+        The element atom
+    .PARAMETER Set
+        The set atom
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Element,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Set,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Element, $Set))
+    $link.SetMetadata('LinkSubType', 'MemberLink')
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+function New-SubsetLink {
+    <#
+    .SYNOPSIS
+        Creates a SubsetLink for subset relationships
+    .PARAMETER Subset
+        The subset atom
+    .PARAMETER Superset
+        The superset atom
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Subset,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Superset,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Subset, $Superset))
+    $link.SetMetadata('LinkSubType', 'SubsetLink')
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+function New-EquivalenceLink {
+    <#
+    .SYNOPSIS
+        Creates an EquivalenceLink for bidirectional equivalence
+    .PARAMETER Atom1
+        First atom
+    .PARAMETER Atom2
+        Second atom
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom1,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Atom2,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Atom1, $Atom2))
+    $link.SetMetadata('LinkSubType', 'EquivalenceLink')
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+function New-SequentialAndLink {
+    <#
+    .SYNOPSIS
+        Creates a SequentialAndLink for ordered conjunctions
+    .PARAMETER Atoms
+        Array of atoms in sequence
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom[]]$Atoms,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::AndLink, $Atoms)
+    $link.SetMetadata('LinkSubType', 'SequentialAndLink')
+    $link.SetMetadata('Ordered', $true)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+# Phase 2 - Value Atom Factory Functions
+
+function New-NumberNode {
+    <#
+    .SYNOPSIS
+        Creates a NumberNode for numeric values
+    .PARAMETER Value
+        The numeric value
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [double]$Value,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $node = [NumberNode]::new($Value)
+    $node.SetTruthValue($Strength, $Confidence)
+    return $node
+}
+
+function New-StringNode {
+    <#
+    .SYNOPSIS
+        Creates a StringNode for string values
+    .PARAMETER Value
+        The string value
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [string]$Value,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $node = [StringNode]::new($Value)
+    $node.SetTruthValue($Strength, $Confidence)
+    return $node
+}
+
+function New-TypeNode {
+    <#
+    .SYNOPSIS
+        Creates a TypeNode for type definitions
+    .PARAMETER TypeName
+        The name of the type
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [string]$TypeName
+    )
+    
+    return [TypeNode]::new($TypeName)
+}
+
+function New-TypedAtomLink {
+    <#
+    .SYNOPSIS
+        Creates a TypedAtomLink to annotate an atom with its type
+    .PARAMETER Atom
+        The atom to type
+    .PARAMETER Type
+        The type (should be a TypeNode)
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Type,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Atom, $Type))
+    $link.SetMetadata('LinkSubType', 'TypedAtomLink')
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+function New-SignatureLink {
+    <#
+    .SYNOPSIS
+        Creates a SignatureLink for function signatures
+    .PARAMETER Function
+        The function atom
+    .PARAMETER Signature
+        The signature atom (typically an ArrowLink)
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Function,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Signature,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Function, $Signature))
+    $link.SetMetadata('LinkSubType', 'SignatureLink')
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+function New-ArrowLink {
+    <#
+    .SYNOPSIS
+        Creates an ArrowLink for function types (Input -> Output)
+    .PARAMETER InputTypes
+        The input types (typically a ListLink)
+    .PARAMETER OutputType
+        The output type
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$InputTypes,
+        
+        [Parameter(Mandatory)]
+        [Atom]$OutputType,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($InputTypes, $OutputType))
+    $link.SetMetadata('LinkSubType', 'ArrowLink')
+    $link.SetMetadata('IsFunctionType', $true)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+# Phase 2 - Helper Functions
+
+function Get-AtomValue {
+    <#
+    .SYNOPSIS
+        Gets the value from a value atom (NumberNode, StringNode, etc.)
+    #>
+    param([Atom]$Atom)
+    
+    if ($Atom -is [NumberNode]) {
+        return $Atom.GetValue()
+    }
+    if ($Atom -is [StringNode] -or $Atom -is [Node]) {
+        return $Atom.Name
+    }
+    return $null
+}
+
+function Test-AtomType {
+    <#
+    .SYNOPSIS
+        Tests if an atom matches a specific subtype
+    .PARAMETER Atom
+        The atom to test
+    .PARAMETER SubType
+        The subtype to check (e.g., 'NumberNode', 'MemberLink')
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom,
+        
+        [Parameter(Mandatory)]
+        [string]$SubType
+    )
+    
+    return $Atom.GetMetadata('NodeSubType') -eq $SubType -or 
+           $Atom.GetMetadata('LinkSubType') -eq $SubType
+}
+
 # Export module members
 Export-ModuleMember -Function @(
+    # Phase 1 - Core functions
     'New-ConceptNode',
     'New-PredicateNode',
     'New-VariableNode',
@@ -453,5 +787,26 @@ Export-ModuleMember -Function @(
     'New-ListLink',
     'New-AndLink',
     'New-OrLink',
-    'New-ImplicationLink'
+    'New-ImplicationLink',
+    
+    # Phase 2 - Advanced Links
+    'New-ContextLink',
+    'New-MemberLink',
+    'New-SubsetLink',
+    'New-EquivalenceLink',
+    'New-SequentialAndLink',
+    
+    # Phase 2 - Value Atoms
+    'New-NumberNode',
+    'New-StringNode',
+    
+    # Phase 2 - Type System
+    'New-TypeNode',
+    'New-TypedAtomLink',
+    'New-SignatureLink',
+    'New-ArrowLink',
+    
+    # Phase 2 - Helpers
+    'Get-AtomValue',
+    'Test-AtomType'
 ) -Variable @() -Cmdlet @()
