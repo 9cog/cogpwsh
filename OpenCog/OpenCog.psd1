@@ -84,8 +84,7 @@ Perfect for:
     NestedModules = @(
         'Core/Atoms.psm1',
         'Core/AtomSpace.psm1',
-        'Core/PatternMatcher.psm1',
-        'Core/AdvancedPatternMatcher.psm1'
+        'Core/PatternMatcher.psm1'
     )
     
     # Functions to export from this module
@@ -172,8 +171,8 @@ Perfect for:
         'New-ChoiceLink',
         'New-SequentialOrLink',
         'New-AbsentLink',
-        'New-AdvancedPatternMatcher',
-        'Invoke-AdvancedPattern'
+        'Invoke-AdvancedPattern',
+        'Invoke-PatternInstantiation'
     )
     
     # Cmdlets to export from this module
@@ -190,8 +189,7 @@ Perfect for:
         'OpenCog.psm1',
         'Core/Atoms.psm1',
         'Core/AtomSpace.psm1',
-        'Core/PatternMatcher.psm1',
-        'Core/AdvancedPatternMatcher.psm1'
+        'Core/PatternMatcher.psm1'
     )
     
     # List of all files packaged with this module
@@ -234,10 +232,10 @@ Perfect for:
             
             # ReleaseNotes of this module
             ReleaseNotes = @'
-Version 1.2.0 - Phase 3: Advanced Pattern Matching
+Version 1.2.0 - Phase 3: Advanced Pattern Matching (Integrated)
 
 New Features:
-- Advanced Pattern Matching (AdvancedPatternMatcher.psm1)
+- Advanced Pattern Matching (integrated into Atoms.psm1 and PatternMatcher.psm1)
   * GetLink for extracting values from pattern matches
   * BindLink for pattern rewriting and transformation
   * SatisfactionLink for boolean satisfaction queries
@@ -253,11 +251,12 @@ Improvements:
 * Pattern rewriting and transformation
 * Support for negation and alternatives
 * Backward compatible with Phase 1 and Phase 2 code
+* Fixed PowerShell class instantiation issues by integrating classes
 
 Components:
 * Phase 1: Atoms.psm1, AtomSpace.psm1, PatternMatcher.psm1
 * Phase 2: Extended types in Atoms.psm1
-* Phase 3: AdvancedPatternMatcher.psm1
+* Phase 3: Advanced pattern links in Atoms.psm1, execution engine in PatternMatcher.psm1
 
 Version 1.1.0 - Phase 2: Extended Atom Types
 

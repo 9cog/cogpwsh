@@ -1097,6 +1097,234 @@ function Get-TypeHierarchy {
 
 # Phase 2 - Helper Functions
 
+#region Phase 3 - Factory Functions for Advanced Pattern Links
+
+<#
+.SYNOPSIS
+    Create a GetLink for value extraction
+.PARAMETER VariableList
+    ListLink containing variables
+.PARAMETER Pattern
+    Pattern to match
+.PARAMETER Output
+    Specification of what to return
+.EXAMPLE
+    $vars = New-ListLink @($varX, $varY)
+    $pattern = New-InheritanceLink -Child $varX -Parent $varY
+    $getLink = New-GetLink -VariableList $vars -Pattern $pattern -Output $varX
+#>
+function New-GetLink {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        $VariableList,
+        
+        [Parameter(Mandatory = $true)]
+        $Pattern,
+        
+        [Parameter(Mandatory = $true)]
+        $Output,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($VariableList, $Pattern, $Output))
+    $link.SetMetadata('LinkSubType', 'GetLink')
+    $link.SetMetadata('VariableList', $VariableList)
+    $link.SetMetadata('Pattern', $Pattern)
+    $link.SetMetadata('Output', $Output)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+<#
+.SYNOPSIS
+    Create a BindLink for pattern rewriting
+.PARAMETER VariableList
+    ListLink containing variables
+.PARAMETER Pattern
+    Pattern to match
+.PARAMETER Rewrite
+    Template for rewriting matched patterns
+.EXAMPLE
+    $vars = New-ListLink @($varX)
+    $pattern = New-InheritanceLink -Child $varX -Parent $animal
+    $rewrite = New-InheritanceLink -Child $varX -Parent $livingThing
+    $bindLink = New-BindLink -VariableList $vars -Pattern $pattern -Rewrite $rewrite
+#>
+function New-BindLink {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        $VariableList,
+        
+        [Parameter(Mandatory = $true)]
+        $Pattern,
+        
+        [Parameter(Mandatory = $true)]
+        $Rewrite,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($VariableList, $Pattern, $Rewrite))
+    $link.SetMetadata('LinkSubType', 'BindLink')
+    $link.SetMetadata('VariableList', $VariableList)
+    $link.SetMetadata('Pattern', $Pattern)
+    $link.SetMetadata('Rewrite', $Rewrite)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+<#
+.SYNOPSIS
+    Create a SatisfactionLink for boolean queries
+.PARAMETER VariableList
+    ListLink containing variables
+.PARAMETER Pattern
+    Pattern to check for satisfaction
+.EXAMPLE
+    $vars = New-ListLink @($varX)
+    $pattern = New-InheritanceLink -Child $varX -Parent $animal
+    $satLink = New-SatisfactionLink -VariableList $vars -Pattern $pattern
+#>
+function New-SatisfactionLink {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        $VariableList,
+        
+        [Parameter(Mandatory = $true)]
+        $Pattern,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($VariableList, $Pattern))
+    $link.SetMetadata('LinkSubType', 'SatisfactionLink')
+    $link.SetMetadata('VariableList', $VariableList)
+    $link.SetMetadata('Pattern', $Pattern)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+<#
+.SYNOPSIS
+    Create a DualLink for bidirectional queries
+.PARAMETER Forward
+    Forward pattern
+.PARAMETER Backward
+    Backward pattern
+.EXAMPLE
+    $forward = New-InheritanceLink -Child $cat -Parent $animal
+    $backward = New-InheritanceLink -Child $animal -Parent $livingThing
+    $dualLink = New-DualLink -Forward $forward -Backward $backward
+#>
+function New-DualLink {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        $Forward,
+        
+        [Parameter(Mandatory = $true)]
+        $Backward,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Forward, $Backward))
+    $link.SetMetadata('LinkSubType', 'DualLink')
+    $link.SetMetadata('Forward', $Forward)
+    $link.SetMetadata('Backward', $Backward)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+<#
+.SYNOPSIS
+    Create a ChoiceLink for alternative patterns
+.PARAMETER Alternatives
+    Array of alternative patterns
+.EXAMPLE
+    $alt1 = New-InheritanceLink -Child $x -Parent $cat
+    $alt2 = New-InheritanceLink -Child $x -Parent $dog
+    $choiceLink = New-ChoiceLink -Alternatives @($alt1, $alt2)
+#>
+function New-ChoiceLink {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [Atom[]]$Alternatives,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, $Alternatives)
+    $link.SetMetadata('LinkSubType', 'ChoiceLink')
+    $link.SetMetadata('Alternatives', $Alternatives)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+<#
+.SYNOPSIS
+    Create a SequentialOrLink for ordered disjunctions
+.PARAMETER Alternatives
+    Array of alternative patterns (tried in order)
+.EXAMPLE
+    $alt1 = New-ConceptNode "FirstChoice"
+    $alt2 = New-ConceptNode "SecondChoice"
+    $seqOrLink = New-SequentialOrLink -Alternatives @($alt1, $alt2)
+#>
+function New-SequentialOrLink {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [Atom[]]$Alternatives,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, $Alternatives)
+    $link.SetMetadata('LinkSubType', 'SequentialOrLink')
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+<#
+.SYNOPSIS
+    Create an AbsentLink for negation-as-failure
+.PARAMETER Pattern
+    Pattern that should be absent
+.EXAMPLE
+    $pattern = New-InheritanceLink -Child $cat -Parent $robot
+    $absentLink = New-AbsentLink -Pattern $pattern
+#>
+function New-AbsentLink {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        $Pattern,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Pattern))
+    $link.SetMetadata('LinkSubType', 'AbsentLink')
+    $link.SetMetadata('Pattern', $Pattern)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+#endregion
+
 # Export module members
 Export-ModuleMember -Function @(
     # Phase 1 - Core functions
@@ -1151,5 +1379,14 @@ Export-ModuleMember -Function @(
     
     # Phase 2 Extended - Type System Helpers
     'Test-TypeCompatibility',
-    'Get-TypeHierarchy'
+    'Get-TypeHierarchy',
+    
+    # Phase 3 - Advanced Pattern Matching
+    'New-GetLink',
+    'New-BindLink',
+    'New-SatisfactionLink',
+    'New-DualLink',
+    'New-ChoiceLink',
+    'New-SequentialOrLink',
+    'New-AbsentLink'
 ) -Variable @() -Cmdlet @()

@@ -291,6 +291,219 @@ class QueryBuilder {
     }
 }
 
+#region Phase 3 - Advanced Pattern Matcher
+
+<#
+.SYNOPSIS
+    Advanced Pattern Matcher - Executor for advanced pattern links
+#>
+class AdvancedPatternMatcher {
+    $AtomSpace
+    $BasicMatcher
+    
+    AdvancedPatternMatcher($atomspace) {
+        $this.AtomSpace = $atomspace
+        $this.BasicMatcher = [PatternMatcher]::new($atomspace)
+    }
+    
+    <#
+    .SYNOPSIS
+        Execute a GetLink query
+    .RETURNS
+        List of atoms matching the output specification
+    #>
+    [System.Collections.Generic.List[Atom]] ExecuteGetLink($getLink) {
+        $results = [System.Collections.Generic.List[Atom]]::new()
+        
+        # Get components from metadata
+        $pattern = $getLink.GetMetadata('Pattern')
+        $output = $getLink.GetMetadata('Output')
+        
+        # Match the pattern to get variable bindings
+        $bindings = $this.BasicMatcher.Match($pattern)
+        
+        # For each binding, instantiate the output and collect results
+        foreach ($binding in $bindings) {
+            $instantiated = $this.InstantiatePattern($output, $binding)
+            if ($null -ne $instantiated) {
+                $results.Add($instantiated)
+            }
+        }
+        
+        return $results
+    }
+    
+    <#
+    .SYNOPSIS
+        Execute a BindLink query
+    .RETURNS
+        List of rewritten atoms added to AtomSpace
+    #>
+    [System.Collections.Generic.List[Atom]] ExecuteBindLink($bindLink) {
+        $results = [System.Collections.Generic.List[Atom]]::new()
+        
+        # Get components from metadata
+        $pattern = $bindLink.GetMetadata('Pattern')
+        $rewrite = $bindLink.GetMetadata('Rewrite')
+        
+        # Match the pattern to get variable bindings
+        $bindings = $this.BasicMatcher.Match($pattern)
+        
+        # For each binding, instantiate the rewrite template and add to AtomSpace
+        foreach ($binding in $bindings) {
+            $rewritten = $this.InstantiatePattern($rewrite, $binding)
+            if ($null -ne $rewritten) {
+                $this.AtomSpace.AddAtom($rewritten)
+                $results.Add($rewritten)
+            }
+        }
+        
+        return $results
+    }
+    
+    <#
+    .SYNOPSIS
+        Execute a SatisfactionLink query
+    .RETURNS
+        Boolean indicating if pattern has any groundings
+    #>
+    [bool] ExecuteSatisfactionLink($satLink) {
+        $pattern = $satLink.GetMetadata('Pattern')
+        $bindings = $this.BasicMatcher.Match($pattern)
+        return $bindings.Count -gt 0
+    }
+    
+    <#
+    .SYNOPSIS
+        Execute a DualLink query
+    .RETURNS
+        List of matches from both forward and backward patterns
+    #>
+    [System.Collections.Generic.List[hashtable]] ExecuteDualLink($dualLink) {
+        $results = [System.Collections.Generic.List[hashtable]]::new()
+        
+        # Get components from metadata
+        $forward = $dualLink.GetMetadata('Forward')
+        $backward = $dualLink.GetMetadata('Backward')
+        
+        # Execute forward pattern
+        $forwardBindings = $this.BasicMatcher.Match($forward)
+        foreach ($binding in $forwardBindings) {
+            $results.Add($binding)
+        }
+        
+        # Execute backward pattern
+        $backwardBindings = $this.BasicMatcher.Match($backward)
+        foreach ($binding in $backwardBindings) {
+            $results.Add($binding)
+        }
+        
+        return $results
+    }
+    
+    <#
+    .SYNOPSIS
+        Execute a ChoiceLink query
+    .RETURNS
+        List of all matches from any alternative
+    #>
+    [System.Collections.Generic.List[hashtable]] ExecuteChoiceLink($choiceLink) {
+        $results = [System.Collections.Generic.List[hashtable]]::new()
+        
+        # Try each alternative and collect all matches
+        # Alternatives are stored in the outgoing set
+        foreach ($alternative in $choiceLink.Outgoing) {
+            $bindings = $this.BasicMatcher.Match($alternative)
+            foreach ($binding in $bindings) {
+                $results.Add($binding)
+            }
+        }
+        
+        return $results
+    }
+    
+    <#
+    .SYNOPSIS
+        Execute a SequentialOrLink query
+    .RETURNS
+        First successful match from alternatives (in order)
+    #>
+    [hashtable] ExecuteSequentialOrLink($seqOrLink) {
+        # Try alternatives in order, return first success
+        foreach ($alternative in $seqOrLink.Outgoing) {
+            $bindings = $this.BasicMatcher.Match($alternative)
+            if ($bindings.Count -gt 0) {
+                return $bindings[0]  # Return first match
+            }
+        }
+        
+        return $null  # No match found
+    }
+    
+    <#
+    .SYNOPSIS
+        Execute an AbsentLink query
+    .RETURNS
+        True if pattern is absent (does not match)
+    #>
+    [bool] ExecuteAbsentLink($absentLink) {
+        $pattern = $absentLink.GetMetadata('Pattern')
+        $bindings = $this.BasicMatcher.Match($pattern)
+        return $bindings.Count -eq 0  # Succeeds if NO matches
+    }
+    
+    <#
+    .SYNOPSIS
+        Instantiate a pattern with variable bindings
+    .RETURNS
+        New atom with variables replaced by their bindings
+    #>
+    [Atom] InstantiatePattern($pattern, [hashtable]$bindings) {
+        # If pattern is a variable, return its binding
+        if ($pattern -is [Node] -and $pattern.Type -eq [AtomType]::VariableNode) {
+            if ($bindings.ContainsKey($pattern.Name)) {
+                return $bindings[$pattern.Name]
+            }
+            return $null
+        }
+        
+        # If pattern is a node (non-variable), return as-is
+        if ($pattern -is [Node]) {
+            return $pattern
+        }
+        
+        # If pattern is a link, recursively instantiate outgoing
+        if ($pattern -is [Link]) {
+            $instantiatedOutgoing = [System.Collections.Generic.List[Atom]]::new()
+            
+            foreach ($out in $pattern.Outgoing) {
+                $instantiated = $this.InstantiatePattern($out, $bindings)
+                if ($null -ne $instantiated) {
+                    $instantiatedOutgoing.Add($instantiated)
+                }
+                else {
+                    return $null  # Failed to instantiate
+                }
+            }
+            
+            # Create new link with instantiated outgoing
+            $newLink = [Link]::new($instantiatedOutgoing.ToArray())
+            $newLink.Type = $pattern.Type
+            
+            # Copy metadata
+            foreach ($key in $pattern.Metadata.Keys) {
+                $newLink.Metadata[$key] = $pattern.Metadata[$key]
+            }
+            
+            return $newLink
+        }
+        
+        return $null
+    }
+}
+
+#endregion
+
 # PowerShell functions for pattern matching
 
 function New-PatternMatcher {
@@ -459,6 +672,184 @@ function Invoke-Query {
     return $results
 }
 
+#region Phase 3 - Advanced Pattern Matching Functions
+
+<#
+.SYNOPSIS
+    Execute an advanced pattern link
+.PARAMETER AtomSpace
+    The AtomSpace to query
+.PARAMETER PatternLink
+    The pattern link to execute (GetLink, BindLink, etc.)
+.EXAMPLE
+    $results = Invoke-AdvancedPattern -AtomSpace $kb -PatternLink $getLink
+#>
+function Invoke-AdvancedPattern {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        $AtomSpace,
+        
+        [Parameter(Mandatory = $true)]
+        $PatternLink
+    )
+    
+    # Get the pattern link subtype and dispatch based on it
+    $subType = $PatternLink.GetMetadata('LinkSubType')
+    
+    switch ($subType) {
+        'GetLink' {
+            # Execute GetLink - extract values
+            $results = [System.Collections.Generic.List[Atom]]::new()
+            $pattern = $PatternLink.GetMetadata('Pattern')
+            $output = $PatternLink.GetMetadata('Output')
+            $bindings = Find-Pattern -AtomSpace $AtomSpace -Pattern $pattern
+            
+            foreach ($binding in $bindings) {
+                $instantiated = Invoke-PatternInstantiation -Pattern $output -Bindings $binding
+                if ($null -ne $instantiated) {
+                    $results.Add($instantiated)
+                }
+            }
+            return $results
+        }
+        'BindLink' {
+            # Execute BindLink - pattern rewriting
+            $results = [System.Collections.Generic.List[Atom]]::new()
+            $pattern = $PatternLink.GetMetadata('Pattern')
+            $rewrite = $PatternLink.GetMetadata('Rewrite')
+            $bindings = Find-Pattern -AtomSpace $AtomSpace -Pattern $pattern
+            
+            foreach ($binding in $bindings) {
+                $rewritten = Invoke-PatternInstantiation -Pattern $rewrite -Bindings $binding
+                if ($null -ne $rewritten) {
+                    $AtomSpace.AddAtom($rewritten)
+                    $results.Add($rewritten)
+                }
+            }
+            return $results
+        }
+        'SatisfactionLink' {
+            # Execute SatisfactionLink - boolean query
+            $pattern = $PatternLink.GetMetadata('Pattern')
+            $bindings = Find-Pattern -AtomSpace $AtomSpace -Pattern $pattern
+            return $bindings.Count -gt 0
+        }
+        'DualLink' {
+            # Execute DualLink - bidirectional
+            $results = [System.Collections.Generic.List[hashtable]]::new()
+            $forward = $PatternLink.GetMetadata('Forward')
+            $backward = $PatternLink.GetMetadata('Backward')
+            
+            $forwardBindings = Find-Pattern -AtomSpace $AtomSpace -Pattern $forward
+            foreach ($binding in $forwardBindings) {
+                $results.Add($binding)
+            }
+            
+            $backwardBindings = Find-Pattern -AtomSpace $AtomSpace -Pattern $backward
+            foreach ($binding in $backwardBindings) {
+                $results.Add($binding)
+            }
+            return $results
+        }
+        'ChoiceLink' {
+            # Execute ChoiceLink - alternatives
+            $results = [System.Collections.Generic.List[hashtable]]::new()
+            
+            foreach ($alternative in $PatternLink.Outgoing) {
+                $bindings = Find-Pattern -AtomSpace $AtomSpace -Pattern $alternative
+                foreach ($binding in $bindings) {
+                    $results.Add($binding)
+                }
+            }
+            return $results
+        }
+        'SequentialOrLink' {
+            # Execute SequentialOrLink - first match
+            foreach ($alternative in $PatternLink.Outgoing) {
+                $bindings = Find-Pattern -AtomSpace $AtomSpace -Pattern $alternative
+                if ($bindings.Count -gt 0) {
+                    return $bindings[0]
+                }
+            }
+            return $null
+        }
+        'AbsentLink' {
+            # Execute AbsentLink - negation
+            $pattern = $PatternLink.GetMetadata('Pattern')
+            $bindings = Find-Pattern -AtomSpace $AtomSpace -Pattern $pattern
+            return $bindings.Count -eq 0
+        }
+        default {
+            throw "Unknown pattern link type: $subType"
+        }
+    }
+}
+
+<#
+.SYNOPSIS
+    Instantiate a pattern with variable bindings (helper function)
+.PARAMETER Pattern
+    The pattern to instantiate
+.PARAMETER Bindings
+    Hashtable of variable bindings
+.RETURNS
+    New atom with variables replaced by their bindings
+#>
+function Invoke-PatternInstantiation {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        $Pattern,
+        
+        [Parameter(Mandatory = $true)]
+        [hashtable]$Bindings
+    )
+    
+    # If pattern is a variable, return its binding
+    if ($Pattern -is [Node] -and $Pattern.Type -eq [AtomType]::VariableNode) {
+        if ($Bindings.ContainsKey($Pattern.Name)) {
+            return $Bindings[$Pattern.Name]
+        }
+        return $null
+    }
+    
+    # If pattern is a node (non-variable), return as-is
+    if ($Pattern -is [Node]) {
+        return $Pattern
+    }
+    
+    # If pattern is a link, recursively instantiate outgoing
+    if ($Pattern -is [Link]) {
+        $instantiatedOutgoing = [System.Collections.Generic.List[Atom]]::new()
+        
+        foreach ($out in $Pattern.Outgoing) {
+            $instantiated = Invoke-PatternInstantiation -Pattern $out -Bindings $Bindings
+            if ($null -ne $instantiated) {
+                $instantiatedOutgoing.Add($instantiated)
+            }
+            else {
+                return $null  # Failed to instantiate
+            }
+        }
+        
+        # Create new link with instantiated outgoing
+        $newLink = [Link]::new($instantiatedOutgoing.ToArray())
+        $newLink.Type = $Pattern.Type
+        
+        # Copy metadata
+        foreach ($key in $Pattern.Metadata.Keys) {
+            $newLink.Metadata[$key] = $Pattern.Metadata[$key]
+        }
+        
+        return $newLink
+    }
+    
+    return $null
+}
+
+#endregion
+
 # Export module members
 Export-ModuleMember -Function @(
     'New-PatternMatcher',
@@ -466,5 +857,8 @@ Export-ModuleMember -Function @(
     'New-QueryBuilder',
     'Find-AtomsByPredicate',
     'Get-MatchResults',
-    'Invoke-Query'
+    'Invoke-Query',
+    # Phase 3 - Advanced Pattern Matching
+    'Invoke-AdvancedPattern',
+    'Invoke-PatternInstantiation'
 )
