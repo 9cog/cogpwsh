@@ -79,7 +79,28 @@ $ExportedFunctions = @(
     
     # Phase 2 - Helpers
     'Get-AtomValue',
-    'Test-AtomType'
+    'Test-AtomType',
+    
+    # Phase 2 Extended - Additional Value Atoms
+    'New-FloatValue',
+    'New-LinkValue',
+    
+    # Phase 2 Extended - Type System Extensions
+    'New-TypeChoice',
+    'New-TypeIntersection',
+    
+    # Phase 2 Extended - Additional Links
+    'New-ImplicationScopeLink',
+    'New-PresentLink',
+    
+    # Phase 2 Extended - Value Extractors
+    'Get-TruthValueOf',
+    'Get-StrengthOf',
+    'Get-ConfidenceOf',
+    
+    # Phase 2 Extended - Type System Helpers
+    'Test-TypeCompatibility',
+    'Get-TypeHierarchy'
 )
 
 Export-ModuleMember -Function $ExportedFunctions
@@ -87,5 +108,5 @@ Export-ModuleMember -Function $ExportedFunctions
 # Module initialization
 Write-Verbose "OpenCog PowerShell module loaded"
 Write-Verbose "Core components: Atoms, AtomSpace, PatternMatcher"
-Write-Verbose "Phase 2 features: Advanced Links, Type System, Value Atoms"
+Write-Verbose "Phase 2 features: Advanced Links, Type System, Value Atoms (Extended)"
 Write-Verbose "Total functions exported: $($ExportedFunctions.Count)"

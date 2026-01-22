@@ -131,7 +131,28 @@ Perfect for:
         
         # Phase 2 - Helpers
         'Get-AtomValue',
-        'Test-AtomType'
+        'Test-AtomType',
+        
+        # Phase 2 Extended - Additional Value Atoms
+        'New-FloatValue',
+        'New-LinkValue',
+        
+        # Phase 2 Extended - Type System Extensions
+        'New-TypeChoice',
+        'New-TypeIntersection',
+        
+        # Phase 2 Extended - Additional Links
+        'New-ImplicationScopeLink',
+        'New-PresentLink',
+        
+        # Phase 2 Extended - Value Extractors
+        'Get-TruthValueOf',
+        'Get-StrengthOf',
+        'Get-ConfidenceOf',
+        
+        # Phase 2 Extended - Type System Helpers
+        'Test-TypeCompatibility',
+        'Get-TypeHierarchy'
     )
     
     # Cmdlets to export from this module
