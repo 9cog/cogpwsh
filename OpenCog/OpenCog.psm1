@@ -12,7 +12,7 @@
     
 .NOTES
     Author: OpenCog PowerShell Project
-    Version: 1.1.0 (Phase 2 - Extended Atom Types)
+    Version: 1.2.0 (Phase 3 - Advanced Pattern Matching)
     
 .LINK
     https://opencog.org
@@ -25,6 +25,9 @@ $CorePath = Join-Path $PSScriptRoot "Core"
 Import-Module (Join-Path $CorePath "Atoms.psm1") -Force
 Import-Module (Join-Path $CorePath "AtomSpace.psm1") -Force
 Import-Module (Join-Path $CorePath "PatternMatcher.psm1") -Force
+
+# Phase 3 - Advanced Pattern Matching
+Import-Module (Join-Path $CorePath "AdvancedPatternMatcher.psm1") -Force
 
 # Re-export all functions from core modules
 $ExportedFunctions = @(
@@ -100,7 +103,18 @@ $ExportedFunctions = @(
     
     # Phase 2 Extended - Type System Helpers
     'Test-TypeCompatibility',
-    'Get-TypeHierarchy'
+    'Get-TypeHierarchy',
+    
+    # Phase 3 - Advanced Pattern Matching
+    'New-GetLink',
+    'New-BindLink',
+    'New-SatisfactionLink',
+    'New-DualLink',
+    'New-ChoiceLink',
+    'New-SequentialOrLink',
+    'New-AbsentLink',
+    'New-AdvancedPatternMatcher',
+    'Invoke-AdvancedPattern'
 )
 
 Export-ModuleMember -Function $ExportedFunctions
@@ -109,4 +123,5 @@ Export-ModuleMember -Function $ExportedFunctions
 Write-Verbose "OpenCog PowerShell module loaded"
 Write-Verbose "Core components: Atoms, AtomSpace, PatternMatcher"
 Write-Verbose "Phase 2 features: Advanced Links, Type System, Value Atoms (Extended)"
+Write-Verbose "Phase 3 features: Advanced Pattern Matching (GetLink, BindLink, etc.)"
 Write-Verbose "Total functions exported: $($ExportedFunctions.Count)"
