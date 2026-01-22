@@ -3,7 +3,7 @@
     RootModule = 'OpenCog.psm1'
     
     # Version number of this module
-    ModuleVersion = '1.1.0'
+    ModuleVersion = '1.2.0'
     
     # ID used to uniquely identify this module
     GUID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
@@ -33,6 +33,15 @@ Phase 2 - Extended Atom Types:
 - Advanced Links: ContextLink, MemberLink, SubsetLink, ImplicationScopeLink, etc.
 - Type System: TypeNode, TypedAtomLink, SignatureLink, ArrowLink, TypeChoice, TypeIntersection
 - Value Atoms: NumberNode, StringNode, FloatValue with value operations
+
+Phase 3 - Advanced Pattern Matching:
+- GetLink: Extract values from pattern matches
+- BindLink: Pattern rewriting and transformation
+- SatisfactionLink: Boolean satisfaction queries
+- DualLink: Bidirectional pattern queries
+- ChoiceLink: Alternative pattern matching
+- SequentialOrLink: Ordered disjunction patterns
+- AbsentLink: Negation-as-failure queries
 
 Features:
 * Create and manage cognitive atoms (nodes and links)
@@ -75,7 +84,8 @@ Perfect for:
     NestedModules = @(
         'Core/Atoms.psm1',
         'Core/AtomSpace.psm1',
-        'Core/PatternMatcher.psm1'
+        'Core/PatternMatcher.psm1',
+        'Core/AdvancedPatternMatcher.psm1'
     )
     
     # Functions to export from this module
@@ -152,7 +162,18 @@ Perfect for:
         
         # Phase 2 Extended - Type System Helpers
         'Test-TypeCompatibility',
-        'Get-TypeHierarchy'
+        'Get-TypeHierarchy',
+        
+        # Phase 3 - Advanced Pattern Matching
+        'New-GetLink',
+        'New-BindLink',
+        'New-SatisfactionLink',
+        'New-DualLink',
+        'New-ChoiceLink',
+        'New-SequentialOrLink',
+        'New-AbsentLink',
+        'New-AdvancedPatternMatcher',
+        'Invoke-AdvancedPattern'
     )
     
     # Cmdlets to export from this module
@@ -169,7 +190,8 @@ Perfect for:
         'OpenCog.psm1',
         'Core/Atoms.psm1',
         'Core/AtomSpace.psm1',
-        'Core/PatternMatcher.psm1'
+        'Core/PatternMatcher.psm1',
+        'Core/AdvancedPatternMatcher.psm1'
     )
     
     # List of all files packaged with this module
@@ -212,6 +234,31 @@ Perfect for:
             
             # ReleaseNotes of this module
             ReleaseNotes = @'
+Version 1.2.0 - Phase 3: Advanced Pattern Matching
+
+New Features:
+- Advanced Pattern Matching (AdvancedPatternMatcher.psm1)
+  * GetLink for extracting values from pattern matches
+  * BindLink for pattern rewriting and transformation
+  * SatisfactionLink for boolean satisfaction queries
+  * DualLink for bidirectional pattern queries
+  * ChoiceLink for alternative pattern matching
+  * SequentialOrLink for ordered disjunction patterns
+  * AbsentLink for negation-as-failure queries
+  * AdvancedPatternMatcher execution engine
+
+Improvements:
+* Module now exports 59 functions (up from 50)
+* Sophisticated query capabilities
+* Pattern rewriting and transformation
+* Support for negation and alternatives
+* Backward compatible with Phase 1 and Phase 2 code
+
+Components:
+* Phase 1: Atoms.psm1, AtomSpace.psm1, PatternMatcher.psm1
+* Phase 2: Extended types in Atoms.psm1
+* Phase 3: AdvancedPatternMatcher.psm1
+
 Version 1.1.0 - Phase 2: Extended Atom Types
 
 New Features:
