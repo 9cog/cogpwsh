@@ -472,6 +472,59 @@ class TypeNode : Node {
     }
 }
 
+# Phase 2 Extended - Additional Value Types
+
+class FloatValue : Node {
+    [double]$Value
+    [int]$Precision
+    
+    FloatValue([double]$value, [int]$precision = 15) : base([AtomType]::ConceptNode, $value.ToString("G$precision")) {
+        $this.Value = $value
+        $this.Precision = $precision
+        $this.SetMetadata('NodeSubType', 'FloatValue')
+    }
+    
+    [double] GetValue() { return $this.Value }
+    [int] GetPrecision() { return $this.Precision }
+}
+
+class LinkValue : Node {
+    [Link]$LinkData
+    
+    LinkValue([Link]$link) : base([AtomType]::ConceptNode, "LinkValue_$($link.Handle)") {
+        $this.LinkData = $link
+        $this.SetMetadata('NodeSubType', 'LinkValue')
+    }
+    
+    [Link] GetLink() { return $this.LinkData }
+}
+
+# Phase 2 Extended - Type System Enhancements
+
+class TypeChoice : Node {
+    [Atom[]]$Types
+    
+    TypeChoice([Atom[]]$types) : base([AtomType]::ConceptNode, "TypeChoice") {
+        $this.Types = $types
+        $this.SetMetadata('NodeSubType', 'TypeChoice')
+        $this.SetMetadata('IsUnionType', $true)
+    }
+    
+    [Atom[]] GetTypes() { return $this.Types }
+}
+
+class TypeIntersection : Node {
+    [Atom[]]$Types
+    
+    TypeIntersection([Atom[]]$types) : base([AtomType]::ConceptNode, "TypeIntersection") {
+        $this.Types = $types
+        $this.SetMetadata('NodeSubType', 'TypeIntersection')
+        $this.SetMetadata('IsIntersectionType', $true)
+    }
+    
+    [Atom[]] GetTypes() { return $this.Types }
+}
+
 # Phase 2 - Advanced Link Factory Functions
 
 function New-ContextLink {
@@ -736,22 +789,205 @@ function New-ArrowLink {
     return $link
 }
 
+# Phase 2 Extended - Additional Value Atom Factory Functions
+
+function New-FloatValue {
+    <#
+    .SYNOPSIS
+        Creates a FloatValue for precise floating-point values
+    .PARAMETER Value
+        The floating-point value
+    .PARAMETER Precision
+        The precision (decimal places) for the value, default is 15
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [double]$Value,
+        
+        [int]$Precision = 15,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $node = [FloatValue]::new($Value, $Precision)
+    $node.SetTruthValue($Strength, $Confidence)
+    return $node
+}
+
+function New-LinkValue {
+    <#
+    .SYNOPSIS
+        Creates a LinkValue for storing link values
+    .PARAMETER Link
+        The link to wrap as a value
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Link]$Link,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $node = [LinkValue]::new($Link)
+    $node.SetTruthValue($Strength, $Confidence)
+    return $node
+}
+
+function New-TypeChoice {
+    <#
+    .SYNOPSIS
+        Creates a TypeChoice for union types (A | B)
+    .PARAMETER Types
+        Array of type atoms that form the union
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom[]]$Types
+    )
+    
+    return [TypeChoice]::new($Types)
+}
+
+function New-TypeIntersection {
+    <#
+    .SYNOPSIS
+        Creates a TypeIntersection for intersection types (A & B)
+    .PARAMETER Types
+        Array of type atoms that form the intersection
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom[]]$Types
+    )
+    
+    return [TypeIntersection]::new($Types)
+}
+
+# Phase 2 Extended - Additional Link Factory Functions
+
+function New-ImplicationScopeLink {
+    <#
+    .SYNOPSIS
+        Creates an ImplicationScopeLink for scoped implications
+    .PARAMETER Variables
+        The variable scope (typically a VariableList)
+    .PARAMETER Antecedent
+        The antecedent (if part)
+    .PARAMETER Consequent
+        The consequent (then part)
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Variables,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Antecedent,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Consequent,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Variables, $Antecedent, $Consequent))
+    $link.SetMetadata('LinkSubType', 'ImplicationScopeLink')
+    $link.SetMetadata('IsScoped', $true)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
+function New-PresentLink {
+    <#
+    .SYNOPSIS
+        Creates a PresentLink for temporal presence
+    .PARAMETER Atom
+        The atom that is present
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom,
+        
+        [double]$Strength = 1.0,
+        [double]$Confidence = 1.0
+    )
+    
+    $link = [Link]::new([AtomType]::Link, @($Atom))
+    $link.SetMetadata('LinkSubType', 'PresentLink')
+    $link.SetMetadata('IsTemporal', $true)
+    $link.SetTruthValue($Strength, $Confidence)
+    return $link
+}
+
 # Phase 2 - Helper Functions
 
 function Get-AtomValue {
     <#
     .SYNOPSIS
-        Gets the value from a value atom (NumberNode, StringNode, etc.)
+        Gets the value from a value atom (NumberNode, StringNode, FloatValue, etc.)
     #>
     param([Atom]$Atom)
     
     if ($Atom -is [NumberNode]) {
         return $Atom.GetValue()
     }
+    if ($Atom -is [FloatValue]) {
+        return $Atom.GetValue()
+    }
+    if ($Atom -is [LinkValue]) {
+        return $Atom.GetLink()
+    }
     if ($Atom -is [StringNode] -or $Atom -is [Node]) {
         return $Atom.Name
     }
     return $null
+}
+
+function Get-TruthValueOf {
+    <#
+    .SYNOPSIS
+        Extracts the truth value from an atom
+    .PARAMETER Atom
+        The atom to extract truth value from
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom
+    )
+    
+    return $Atom.GetTruthValue()
+}
+
+function Get-StrengthOf {
+    <#
+    .SYNOPSIS
+        Extracts the strength value from an atom's truth value
+    .PARAMETER Atom
+        The atom to extract strength from
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom
+    )
+    
+    return $Atom.GetTruthValue().Strength
+}
+
+function Get-ConfidenceOf {
+    <#
+    .SYNOPSIS
+        Extracts the confidence value from an atom's truth value
+    .PARAMETER Atom
+        The atom to extract confidence from
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom
+    )
+    
+    return $Atom.GetTruthValue().Confidence
 }
 
 function Test-AtomType {
@@ -774,6 +1010,92 @@ function Test-AtomType {
     return $Atom.GetMetadata('NodeSubType') -eq $SubType -or 
            $Atom.GetMetadata('LinkSubType') -eq $SubType
 }
+
+# Phase 2 Extended - Type System Helpers
+
+function Test-TypeCompatibility {
+    <#
+    .SYNOPSIS
+        Tests if an atom is compatible with a given type
+    .PARAMETER Atom
+        The atom to test
+    .PARAMETER Type
+        The type to check against
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom,
+        
+        [Parameter(Mandatory)]
+        [Atom]$Type
+    )
+    
+    # If type is TypeChoice (union), check if atom matches any type
+    if ($Type -is [TypeChoice]) {
+        foreach ($t in $Type.GetTypes()) {
+            if (Test-TypeCompatibility -Atom $Atom -Type $t) {
+                return $true
+            }
+        }
+        return $false
+    }
+    
+    # If type is TypeIntersection, check if atom matches all types
+    if ($Type -is [TypeIntersection]) {
+        foreach ($t in $Type.GetTypes()) {
+            if (-not (Test-TypeCompatibility -Atom $Atom -Type $t)) {
+                return $false
+            }
+        }
+        return $true
+    }
+    
+    # Basic type checking
+    if ($Type -is [TypeNode]) {
+        $typeName = $Type.Name
+        $atomSubType = $Atom.GetMetadata('NodeSubType')
+        if (-not $atomSubType) {
+            $atomSubType = $Atom.GetMetadata('LinkSubType')
+        }
+        return $typeName -eq $atomSubType -or $typeName -eq $Atom.Type.ToString()
+    }
+    
+    return $false
+}
+
+function Get-TypeHierarchy {
+    <#
+    .SYNOPSIS
+        Gets the type hierarchy for an atom by traversing TypedAtomLinks
+    .PARAMETER Atom
+        The atom to get type hierarchy for
+    .PARAMETER AtomSpace
+        The AtomSpace to search in
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [Atom]$Atom,
+        
+        [Parameter(Mandatory)]
+        $AtomSpace
+    )
+    
+    $types = @()
+    $incoming = $AtomSpace.GetIncomingSet($Atom)
+    
+    foreach ($link in $incoming) {
+        if (Test-AtomType -Atom $link -SubType 'TypedAtomLink') {
+            # TypedAtomLink has structure: (TypedAtomLink <atom> <type>)
+            if ($link.GetArity() -eq 2 -and $link.GetOutgoingAtom(0).Handle -eq $Atom.Handle) {
+                $types += $link.GetOutgoingAtom(1)
+            }
+        }
+    }
+    
+    return $types
+}
+
+# Phase 2 - Helper Functions
 
 # Export module members
 Export-ModuleMember -Function @(
@@ -808,5 +1130,26 @@ Export-ModuleMember -Function @(
     
     # Phase 2 - Helpers
     'Get-AtomValue',
-    'Test-AtomType'
+    'Test-AtomType',
+    
+    # Phase 2 Extended - Additional Value Atoms
+    'New-FloatValue',
+    'New-LinkValue',
+    
+    # Phase 2 Extended - Type System Extensions
+    'New-TypeChoice',
+    'New-TypeIntersection',
+    
+    # Phase 2 Extended - Additional Links
+    'New-ImplicationScopeLink',
+    'New-PresentLink',
+    
+    # Phase 2 Extended - Value Extractors
+    'Get-TruthValueOf',
+    'Get-StrengthOf',
+    'Get-ConfidenceOf',
+    
+    # Phase 2 Extended - Type System Helpers
+    'Test-TypeCompatibility',
+    'Get-TypeHierarchy'
 ) -Variable @() -Cmdlet @()
