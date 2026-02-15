@@ -358,7 +358,7 @@ function Show-BSeriesExpansion {
         }
     }
     
-    Write-Host "`n" ("=" * 70)
+    Write-Host "`n$('=' * 70)"
 }
 
 # Export module members

@@ -101,7 +101,7 @@ Test-AssertEqual -TestName "Order 3 has 2 trees" -Expected 2 -Actual $trees3.Cou
 
 # Test 1.5: Generate trees for order 4
 $trees4 = $generator.GenerateTrees(4)
-Test-AssertEqual -TestName "Order 4 has 5 trees (not 4)" -Expected 5 -Actual $trees4.Count
+Test-AssertEqual -TestName "Order 4 has 4 trees" -Expected 4 -Actual $trees4.Count
 
 # Test 1.6: Generate trees for order 5
 $trees5 = $generator.GenerateTrees(5)

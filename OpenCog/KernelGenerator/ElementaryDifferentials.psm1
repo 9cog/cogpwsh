@@ -101,15 +101,12 @@ class ElementaryDifferentialGenerator {
                 $trees += $tree2
             }
             4 {
-                # Five trees of order 4 (Cayley's formula)
+                # Four trees of order 4
                 $trees += [RootedTree]::new(4, "f'''(f,f,f)")
                 $trees[-1].Description = "Third derivative"
                 
                 $trees += [RootedTree]::new(4, "f''(f'(f),f)")
-                $trees[-1].Description = "Mixed second-first derivative (1)"
-                
-                $trees += [RootedTree]::new(4, "f''(f,f'(f))")
-                $trees[-1].Description = "Mixed second-first derivative (2)"
+                $trees[-1].Description = "Mixed second-first derivative"
                 
                 $trees += [RootedTree]::new(4, "f'(f''(f,f))")
                 $trees[-1].Description = "First of second derivative"

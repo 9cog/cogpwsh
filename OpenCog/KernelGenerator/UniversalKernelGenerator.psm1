@@ -265,7 +265,7 @@ class GripOptimizer {
         while ($iteration -lt $this.MaxIterations) {
             # Simplified optimization - real implementation would use
             # gradient computation and line search
-            $perturbation = (Get-Random -Minimum -0.01 -Maximum 0.01)
+            $perturbation = (Get-Random -Minimum 0.0 -Maximum 0.02) - 0.01
             
             # Perturb coefficients
             for ($i = 0; $i -lt $coeffs.Count; $i++) {
