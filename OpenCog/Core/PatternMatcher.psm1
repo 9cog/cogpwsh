@@ -18,9 +18,9 @@ using module ./AtomSpace.psm1
     Pattern matcher for finding atoms matching a template
 #>
 class PatternMatcher {
-    [AtomSpace]$AtomSpace
+    $AtomSpace
     
-    PatternMatcher([AtomSpace]$atomspace) {
+    PatternMatcher($atomspace) {
         $this.AtomSpace = $atomspace
     }
     
@@ -34,7 +34,7 @@ class PatternMatcher {
     .RETURNS
         List of variable binding hashtables
     #>
-    [System.Collections.Generic.List[hashtable]] Match([Atom]$pattern) {
+    [System.Collections.Generic.List[hashtable]] Match($pattern) {
         $results = [System.Collections.Generic.List[hashtable]]::new()
         
         # Extract variables from pattern
@@ -255,15 +255,15 @@ class PatternMatcher {
     Query builder for constructing complex queries
 #>
 class QueryBuilder {
-    [AtomSpace]$AtomSpace
-    [Atom]$Pattern
+    $AtomSpace
+    $Pattern
     [scriptblock]$Filter
     
-    QueryBuilder([AtomSpace]$atomspace) {
+    QueryBuilder($atomspace) {
         $this.AtomSpace = $atomspace
     }
     
-    [QueryBuilder] WithPattern([Atom]$pattern) {
+    [QueryBuilder] WithPattern($pattern) {
         $this.Pattern = $pattern
         return $this
     }
@@ -517,7 +517,7 @@ function New-PatternMatcher {
     #>
     param(
         [Parameter(Mandatory)]
-        [AtomSpace]$AtomSpace
+        $AtomSpace
     )
     
     return [PatternMatcher]::new($AtomSpace)
@@ -539,10 +539,10 @@ function Find-Pattern {
     #>
     param(
         [Parameter(Mandatory)]
-        [AtomSpace]$AtomSpace,
+        $AtomSpace,
         
         [Parameter(Mandatory)]
-        [Atom]$Pattern
+        $Pattern
     )
     
     $matcher = [PatternMatcher]::new($AtomSpace)
@@ -561,7 +561,7 @@ function New-QueryBuilder {
     #>
     param(
         [Parameter(Mandatory)]
-        [AtomSpace]$AtomSpace
+        $AtomSpace
     )
     
     return [QueryBuilder]::new($AtomSpace)
@@ -584,7 +584,7 @@ function Find-AtomsByPredicate {
     #>
     param(
         [Parameter(Mandatory)]
-        [AtomSpace]$AtomSpace,
+        $AtomSpace,
         
         [Parameter(Mandatory)]
         [scriptblock]$Predicate
@@ -642,10 +642,10 @@ function Invoke-Query {
     #>
     param(
         [Parameter(Mandatory)]
-        [AtomSpace]$AtomSpace,
+        $AtomSpace,
         
         [Parameter(Mandatory)]
-        [Atom]$Pattern,
+        $Pattern,
         
         [scriptblock]$Filter,
         
