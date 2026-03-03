@@ -59,7 +59,7 @@ class AtomSpace {
         
         # Index by type
         if (-not $this.AtomsByType.ContainsKey($atom.Type)) {
-            $this.AtomsByType[$atom.Type] = [System.Collections.Generic.List[Atom]]::new()
+            $this.AtomsByType[$atom.Type] = [System.Collections.Generic.List[object]]::new()
         }
         $this.AtomsByType[$atom.Type].Add($atom)
         
@@ -74,7 +74,7 @@ class AtomSpace {
             foreach ($outAtom in $atom.GetOutgoingSet()) {
                 $outHandle = $outAtom.GetHandle()
                 if (-not $this.IncomingIndex.ContainsKey($outHandle)) {
-                    $this.IncomingIndex[$outHandle] = [System.Collections.Generic.List[Link]]::new()
+                    $this.IncomingIndex[$outHandle] = [System.Collections.Generic.List[object]]::new()
                 }
                 $this.IncomingIndex[$outHandle].Add($atom)
             }
@@ -165,14 +165,14 @@ class AtomSpace {
     .SYNOPSIS
         Get all atoms of a specific type
     #>
-    [System.Collections.Generic.List[Atom]] GetAtomsByType([AtomType]$type) {
+    [System.Collections.Generic.List[object]] GetAtomsByType([AtomType]$type) {
         if ($this.AtomsByType.ContainsKey($type)) {
             return $this.AtomsByType[$type]
         }
-        return [System.Collections.Generic.List[Atom]]::new()
+        return [System.Collections.Generic.List[object]]::new()
     }
     
-    [System.Collections.Generic.List[Atom]] GetAtomsByType([string]$typeName) {
+    [System.Collections.Generic.List[object]] GetAtomsByType([string]$typeName) {
         $type = [AtomType]::$typeName
         return $this.GetAtomsByType($type)
     }
@@ -190,20 +190,24 @@ class AtomSpace {
     .SYNOPSIS
         Get all links that contain the given atom in their outgoing set
     #>
-    [System.Collections.Generic.List[Link]] GetIncomingSet([Atom]$atom) {
+    [System.Collections.Generic.List[object]] GetIncomingSet([Atom]$atom) {
         $handle = $atom.GetHandle()
         if ($this.IncomingIndex.ContainsKey($handle)) {
             return $this.IncomingIndex[$handle]
         }
-        return [System.Collections.Generic.List[Link]]::new()
+        return [System.Collections.Generic.List[object]]::new()
     }
     
     <#
     .SYNOPSIS
         Get all atoms in the AtomSpace
     #>
-    [System.Collections.Generic.List[Atom]] GetAllAtoms() {
-        return [System.Collections.Generic.List[Atom]]::new($this.AtomsByHandle.Values)
+    [System.Collections.Generic.List[object]] GetAllAtoms() {
+        $result = [System.Collections.Generic.List[object]]::new()
+        foreach ($atom in $this.AtomsByHandle.Values) {
+            $result.Add($atom)
+        }
+        return $result
     }
     
     <#

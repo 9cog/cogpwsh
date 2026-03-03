@@ -312,7 +312,8 @@ $l1 = New-InheritanceLink -Child $n1 -Parent $n2
 $l2 = New-InheritanceLink -Child $n1 -Parent $n2
 Test-Assertion "Links with same structure are equal" ($l1.Equals($l2))
 
-$l3 = New-InheritanceLink -Child $n2 -Parent $n1
+# Use nodes with different names to test different link structure
+$l3 = New-InheritanceLink -Child $n1 -Parent $n3
 Test-Assertion "Links with different structure are not equal" (-not $l1.Equals($l3))
 
 # Show final summary
