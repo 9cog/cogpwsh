@@ -9,10 +9,11 @@
     - Pattern Matching: Query and unification engine
     - Truth Values: Probabilistic truth value system
     - Extended Atom Types: Advanced links, type system, value atoms (Phase 2)
+    - Exotic Atoms: Domain-specific and hierarchical atom types (Phase 4)
     
 .NOTES
     Author: OpenCog PowerShell Project
-    Version: 1.2.0 (Phase 3 - Advanced Pattern Matching)
+    Version: 1.3.0 (Phase 4 - Exotic Atoms)
     
 .LINK
     https://opencog.org
@@ -25,6 +26,7 @@ $CorePath = Join-Path $PSScriptRoot "Core"
 Import-Module (Join-Path $CorePath "Atoms.psm1") -Force
 Import-Module (Join-Path $CorePath "AtomSpace.psm1") -Force
 Import-Module (Join-Path $CorePath "PatternMatcher.psm1") -Force
+Import-Module (Join-Path $CorePath "ExoticAtoms.psm1") -Force
 
 # Re-export all functions from core modules
 $ExportedFunctions = @(
@@ -111,14 +113,34 @@ $ExportedFunctions = @(
     'New-SequentialOrLink',
     'New-AbsentLink',
     'Invoke-AdvancedPattern',
-    'Invoke-PatternInstantiation'
+    'Invoke-PatternInstantiation',
+    
+    # Phase 4 - Exotic Atom Types
+    'New-ExoticNode',
+    'New-AtomSpaceNode',
+    'New-DistributedAtomSpace',
+    'New-GitHubRepoAtom',
+    'New-GitHubOrgAtom',
+    'New-GitHubEnterpriseAtom',
+    'New-AzureEntraTenantAtom',
+    'New-AzureSubscriptionAtom',
+    'New-ExchangeMailboxAtom',
+    'New-ExchangeCalendarAtom',
+    'New-OpenCogAtomSpaceAtom',
+    'Test-ExoticAtom',
+    'Test-AtomSpaceAtom',
+    'Get-ExoticAtomUri',
+    'Get-ExoticAtomProperties',
+    'Register-ExoticAtomType',
+    'Get-RegisteredExoticTypes'
 )
 
 Export-ModuleMember -Function $ExportedFunctions
 
 # Module initialization
 Write-Verbose "OpenCog PowerShell module loaded"
-Write-Verbose "Core components: Atoms, AtomSpace, PatternMatcher"
+Write-Verbose "Core components: Atoms, AtomSpace, PatternMatcher, ExoticAtoms"
 Write-Verbose "Phase 2 features: Advanced Links, Type System, Value Atoms (Extended)"
 Write-Verbose "Phase 3 features: Advanced Pattern Matching (GetLink, BindLink, etc.)"
+Write-Verbose "Phase 4 features: Exotic Atoms (GitHub, Azure, Exchange, Distributed)"
 Write-Verbose "Total functions exported: $($ExportedFunctions.Count)"
