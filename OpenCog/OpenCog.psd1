@@ -3,7 +3,7 @@
     RootModule = 'OpenCog.psm1'
     
     # Version number of this module
-    ModuleVersion = '1.2.0'
+    ModuleVersion = '1.3.0'
     
     # ID used to uniquely identify this module
     GUID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
@@ -43,6 +43,16 @@ Phase 3 - Advanced Pattern Matching:
 - SequentialOrLink: Ordered disjunction patterns
 - AbsentLink: Negation-as-failure queries
 
+Phase 4 - Exotic Atom Types:
+- ExoticNode: URI-addressable atoms for external resources
+- AtomSpaceNode: Atoms containing their own AtomSpaces (hierarchical composition)
+- DistributedAtomSpaceNode: Federated atomspaces across networks
+- GitHub atoms: Repo, Org (AtomSpace of repos), Enterprise (AtomSpace of orgs)
+- Azure atoms: Entra tenant, Subscription
+- Exchange atoms: Mailbox, Calendar
+- OpenCogAtomSpaceAtom: Meta-level AtomSpace as an atom
+- Extensible registry for custom exotic atom types
+
 Features:
 * Create and manage cognitive atoms (nodes and links)
 * Store knowledge in a hypergraph AtomSpace
@@ -51,6 +61,8 @@ Features:
 * Advanced set theory and contextual relationships
 * Complete type system with type checking and inference
 * Numeric and string value atoms with operations
+* Hierarchical atomspaces (org → repos, enterprise → orgs)
+* Domain-specific atom types for GitHub, Azure, Exchange
 * Build intelligent systems using cognitive architecture principles
 
 Perfect for:
@@ -59,6 +71,8 @@ Perfect for:
 - Semantic networks and ontologies
 - Pattern-based inference systems
 - Type-safe cognitive architectures
+- Multi-tenant/hierarchical knowledge management
+- Cloud resource representation and reasoning
 - Educational exploration of cognitive architectures
 '@
     
@@ -84,7 +98,8 @@ Perfect for:
     NestedModules = @(
         'Core/Atoms.psm1',
         'Core/AtomSpace.psm1',
-        'Core/PatternMatcher.psm1'
+        'Core/PatternMatcher.psm1',
+        'Core/ExoticAtoms.psm1'
     )
     
     # Functions to export from this module
@@ -172,7 +187,26 @@ Perfect for:
         'New-SequentialOrLink',
         'New-AbsentLink',
         'Invoke-AdvancedPattern',
-        'Invoke-PatternInstantiation'
+        'Invoke-PatternInstantiation',
+        
+        # Phase 4 - Exotic Atom Types
+        'New-ExoticNode',
+        'New-AtomSpaceNode',
+        'New-DistributedAtomSpace',
+        'New-GitHubRepoAtom',
+        'New-GitHubOrgAtom',
+        'New-GitHubEnterpriseAtom',
+        'New-AzureEntraTenantAtom',
+        'New-AzureSubscriptionAtom',
+        'New-ExchangeMailboxAtom',
+        'New-ExchangeCalendarAtom',
+        'New-OpenCogAtomSpaceAtom',
+        'Test-ExoticAtom',
+        'Test-AtomSpaceAtom',
+        'Get-ExoticAtomUri',
+        'Get-ExoticAtomProperties',
+        'Register-ExoticAtomType',
+        'Get-RegisteredExoticTypes'
     )
     
     # Cmdlets to export from this module
@@ -189,7 +223,8 @@ Perfect for:
         'OpenCog.psm1',
         'Core/Atoms.psm1',
         'Core/AtomSpace.psm1',
-        'Core/PatternMatcher.psm1'
+        'Core/PatternMatcher.psm1',
+        'Core/ExoticAtoms.psm1'
     )
     
     # List of all files packaged with this module
@@ -199,8 +234,10 @@ Perfect for:
         'Core/Atoms.psm1',
         'Core/AtomSpace.psm1',
         'Core/PatternMatcher.psm1',
+        'Core/ExoticAtoms.psm1',
         'Examples/BasicUsage.ps1',
         'Examples/KnowledgeGraph.ps1',
+        'Examples/ExoticAtomsDemo.ps1',
         'Tests/OpenCog.Tests.ps1'
     )
     
@@ -218,7 +255,11 @@ Perfect for:
                 'PatternMatching',
                 'TruthValue',
                 'AGI',
-                'Cognitive'
+                'Cognitive',
+                'ExoticAtoms',
+                'GitHub',
+                'Azure',
+                'Exchange'
             )
             
             # A URL to the license for this module
@@ -232,6 +273,43 @@ Perfect for:
             
             # ReleaseNotes of this module
             ReleaseNotes = @'
+Version 1.3.0 - Phase 4: Exotic Atom Types
+
+New Features:
+- Exotic Atom Framework (Core/ExoticAtoms.psm1)
+  * ExoticNode: URI-addressable atoms for external resources
+  * AtomSpaceNode: Hierarchical atoms containing their own AtomSpaces
+  * DistributedAtomSpaceNode: Federated atomspaces across networks
+  * ExoticAtomRegistry: Extensible type registration system
+
+- GitHub Atom Types
+  * GitHubRepoAtom: Repository representation
+  * GitHubOrgAtom: Organization as AtomSpace of repos
+  * GitHubEnterpriseAtom: Enterprise as AtomSpace of orgs
+
+- Azure Atom Types
+  * AzureEntraTenantAtom: Azure AD/Entra tenant
+  * AzureSubscriptionAtom: Azure subscription
+
+- Exchange/M365 Atom Types
+  * ExchangeMailboxAtom: Exchange mailbox
+  * ExchangeCalendarAtom: Exchange calendar
+
+- OpenCog Meta-Level
+  * OpenCogAtomSpaceAtom: AtomSpace as an atom for reflection
+
+- Helper Functions
+  * Test-ExoticAtom, Test-AtomSpaceAtom
+  * Get-ExoticAtomUri, Get-ExoticAtomProperties
+  * Register-ExoticAtomType, Get-RegisteredExoticTypes
+
+Improvements:
+* Module now exports 76 functions (up from 59)
+* Hierarchical composition: org → repos, enterprise → orgs
+* URI-addressable atoms for external resource representation
+* Extensible type system for custom domain types
+* Backward compatible with Phase 1, 2, and 3 code
+
 Version 1.2.0 - Phase 3: Advanced Pattern Matching (Integrated)
 
 New Features:
