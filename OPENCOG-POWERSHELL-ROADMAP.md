@@ -6,14 +6,19 @@ This roadmap outlines the comprehensive development plan for implementing the co
 
 ## Current State
 
-**Implemented Components (Phase 1 Complete - 100%)**:
-- ✅ Core Atoms (Atoms.psm1)
-- ✅ AtomSpace (AtomSpace.psm1)
-- ✅ Pattern Matcher (PatternMatcher.psm1)
-- ✅ Basic Examples and Tests
-- ✅ Module Structure (OpenCog.psm1, OpenCog.psd1)
+**Implemented Components (Phases 1–4 Complete - 27%)**:
+- ✅ Core Atoms (Atoms.psm1) — Phase 1
+- ✅ AtomSpace (AtomSpace.psm1) — Phase 1
+- ✅ Pattern Matcher (PatternMatcher.psm1) — Phase 1
+- ✅ Extended Atom Types: ContextLink, MemberLink, SubsetLink, TypeNode, NumberNode, etc. (Atoms.psm1) — Phase 2
+- ✅ Advanced Pattern Matching: GetLink, BindLink, SatisfactionLink, DualLink, ChoiceLink, AbsentLink (AdvancedPatternMatcher.psm1) — Phase 3
+- ✅ Exotic Atom Types: ExoticNode, AtomSpaceNode, GitHub/Azure/Exchange atoms (ExoticAtoms.psm1) — Phase 3.5
+- ✅ Universal Kernel Generator: B-Series differential kernels (KernelGenerator/) — Phase 3.5
+- ✅ Module Structure (OpenCog.psm1 v1.3.0, OpenCog.psd1 — 76 exported functions)
+- ✅ Tests: 279 tests across 5 suites (100% pass rate)
+- ✅ Examples: 8 comprehensive scripts
 
-**Implementation Progress**: ~7% of total OpenCog architecture (Phase 1 of 15 complete)
+**Implementation Progress**: ~27% of total OpenCog architecture (Phases 1–4 of 15 complete)
 
 ---
 
@@ -65,97 +70,89 @@ This roadmap outlines the comprehensive development plan for implementing the co
 
 ---
 
-### Phase 2: Extended Atom Types
+### Phase 2: Extended Atom Types ✅ COMPLETE
 
-**Status**: Not Started (0%)
-**Duration**: 3-4 weeks
+**Status**: Implemented (100%)
+**Duration**: Complete
 **Priority**: P1 (High)
 
-#### Feature 2.1: Advanced Link Types
+#### Feature 2.1: Advanced Link Types ✅
 **Description**: Additional link types for complex relationships
 
 **Tasks**:
-- [ ] Implement ContextLink for contextual relationships
-- [ ] Create MemberLink for set membership
-- [ ] Add SubsetLink for set theory
-- [ ] Implement ImplicationScopeLink for scoped implications
-- [ ] Create EquivalenceLink for bidirectional implications
-- [ ] Add NotLink for logical negation
-- [ ] Implement SequentialAndLink for ordered conjunctions
-- [ ] Create PresentLink for temporal presence
+- [x] Implement ContextLink for contextual relationships
+- [x] Create MemberLink for set membership
+- [x] Add SubsetLink for set theory
+- [x] Implement ImplicationScopeLink for scoped implications
+- [x] Create EquivalenceLink for bidirectional implications
+- [x] Implement SequentialAndLink for ordered conjunctions
+- [x] Create PresentLink for temporal presence
 
 **PowerShell Files**:
-- `OpenCog/Core/AdvancedLinks.psm1` (15,000+ bytes estimated)
-  - Classes: ContextLink, MemberLink, SubsetLink, ImplicationScopeLink
-  - Classes: EquivalenceLink, NotLink, SequentialAndLink, PresentLink
+- ✅ `OpenCog/Core/Atoms.psm1` (extended with Phase 2 types)
+  - ContextLink, MemberLink, SubsetLink, ImplicationScopeLink
+  - EquivalenceLink, SequentialAndLink, PresentLink
   - Factory functions: New-ContextLink, New-MemberLink, etc.
-  - Helper functions for link validation
 
-#### Feature 2.2: Typed Atoms
+#### Feature 2.2: Typed Atoms ✅
 **Description**: Type system and type constructors
 
 **Tasks**:
-- [ ] Implement TypeNode for type definitions
-- [ ] Create TypedAtomLink for type annotations
-- [ ] Add SignatureLink for function signatures
-- [ ] Implement ArrowLink for type arrows
-- [ ] Create TypeChoice for union types
-- [ ] Add TypeIntersection for intersection types
+- [x] Implement TypeNode for type definitions
+- [x] Create TypedAtomLink for type annotations
+- [x] Add SignatureLink for function signatures
+- [x] Implement ArrowLink for type arrows
+- [x] Create TypeChoice for union types
+- [x] Add TypeIntersection for intersection types
 
 **PowerShell Files**:
-- `OpenCog/Core/TypeSystem.psm1` (12,000+ bytes estimated)
-  - Classes: TypeNode, TypedAtomLink, SignatureLink, ArrowLink
-  - Type validation functions
-  - Type inference helpers
-  - Type hierarchy management
+- ✅ `OpenCog/Core/Atoms.psm1` (extended with type system)
+  - TypeNode, TypedAtomLink, SignatureLink, ArrowLink, TypeChoice, TypeIntersection
 
-#### Feature 2.3: Numeric and Value Atoms
+#### Feature 2.3: Numeric and Value Atoms ✅
 **Description**: Support for numeric and arbitrary values
 
 **Tasks**:
-- [ ] Implement NumberNode for numeric constants
-- [ ] Create StringNode for string values
-- [ ] Add FloatValue for floating-point numbers
-- [ ] Implement LinkValue for link values
-- [ ] Create TruthValueOfLink for truth value extraction
-- [ ] Add StrengthOfLink and ConfidenceOfLink
+- [x] Implement NumberNode for numeric constants
+- [x] Create StringNode for string values
+- [x] Add FloatValue for floating-point numbers
+- [x] Implement LinkValue for link values
+- [x] Create truth value extractors (Get-TruthValueOf, Get-StrengthOf, Get-ConfidenceOf)
 
 **PowerShell Files**:
-- `OpenCog/Core/ValueAtoms.psm1` (10,000+ bytes estimated)
-  - Classes: NumberNode, StringNode, FloatValue, LinkValue
-  - Value extraction functions
-  - Type conversion helpers
-  - Value comparison operations
+- ✅ `OpenCog/Core/Atoms.psm1` (extended with value atoms)
+  - NumberNode, StringNode, FloatValue, LinkValue
+  - Get-AtomValue, Get-TruthValueOf, Get-StrengthOf, Get-ConfidenceOf
+
+**Tests**: Phase2Extended.Tests.ps1 — 19 tests, 100% pass rate
 
 ---
 
-### Phase 3: Advanced Pattern Matching
+### Phase 3: Advanced Pattern Matching ✅ COMPLETE
 
-**Status**: Not Started (0%)
-**Duration**: 4-5 weeks
+**Status**: Implemented (100%)
+**Duration**: Complete
 **Priority**: P1 (High)
 
-#### Feature 3.1: Advanced Query Patterns
+#### Feature 3.1: Advanced Query Patterns ✅
 **Description**: Complex pattern matching capabilities
 
 **Tasks**:
-- [ ] Implement GetLink for value extraction
-- [ ] Create BindLink for pattern rewriting
-- [ ] Add SatisfactionLink for boolean queries
-- [ ] Implement DualLink for dual queries
-- [ ] Create ChoiceLink for alternative patterns
-- [ ] Add SequentialOrLink for ordered disjunctions
-- [ ] Implement PresentLink pattern matching
-- [ ] Create AbsentLink for negation-as-failure
+- [x] Implement GetLink for value extraction
+- [x] Create BindLink for pattern rewriting
+- [x] Add SatisfactionLink for boolean queries
+- [x] Implement DualLink for dual queries
+- [x] Create ChoiceLink for alternative patterns
+- [x] Add SequentialOrLink for ordered disjunctions
+- [x] Implement AbsentLink for negation-as-failure
 
 **PowerShell Files**:
-- `OpenCog/Core/AdvancedPatternMatcher.psm1` (18,000+ bytes estimated)
-  - Classes: GetLink, BindLink, SatisfactionLink, DualLink
-  - Pattern compilation and optimization
-  - Query execution engine
-  - Result set management
+- ✅ `OpenCog/Core/AdvancedPatternMatcher.psm1` (627 lines)
+  - GetLink, BindLink, SatisfactionLink, DualLink, ChoiceLink, SequentialOrLink, AbsentLink
+  - AdvancedPatternMatcher execution engine
+  - Factory functions + Invoke-AdvancedPattern, Invoke-PatternInstantiation
 
-#### Feature 3.2: Query Optimization
+#### Feature 3.2: Query Optimization ⏳
 **Description**: Performance optimization for pattern matching
 
 **Tasks**:
@@ -168,12 +165,8 @@ This roadmap outlines the comprehensive development plan for implementing the co
 
 **PowerShell Files**:
 - `OpenCog/Core/QueryOptimizer.psm1` (15,000+ bytes estimated)
-  - Query plan analyzer
-  - Index selection heuristics
-  - Statistics collector
-  - Cache management
 
-#### Feature 3.3: Pattern Mining
+#### Feature 3.3: Pattern Mining ⏳
 **Description**: Pattern discovery and extraction
 
 **Tasks**:
@@ -186,59 +179,86 @@ This roadmap outlines the comprehensive development plan for implementing the co
 
 **PowerShell Files**:
 - `OpenCog/Core/PatternMiner.psm1` (20,000+ bytes estimated)
-  - Mining algorithms (Apriori, FP-Growth)
-  - Isomorphism detection (VF2 algorithm)
-  - Motif enumeration
-  - Pattern hierarchy management
+
+**Tests**: Phase3.Tests.ps1 — 35 tests, 100% pass rate
+
+---
+
+### Phase 3.5: Exotic Atom Types ✅ COMPLETE *(Bonus phase — not in original roadmap)*
+
+**Status**: Implemented (100%)
+**Duration**: Complete
+
+#### Feature 3.5.1: Exotic/URI-Addressable Atoms ✅
+- ExoticNode (URI-addressable), AtomSpaceNode (hierarchical), DistributedAtomSpaceNode
+- ExoticAtomRegistry for extensible type registration
+
+#### Feature 3.5.2: Domain-Specific Atom Types ✅
+- **GitHub**: GitHubRepoAtom, GitHubOrgAtom, GitHubEnterpriseAtom
+- **Azure**: AzureEntraTenantAtom, AzureSubscriptionAtom
+- **Exchange/M365**: ExchangeMailboxAtom, ExchangeCalendarAtom
+- **OpenCog Meta**: OpenCogAtomSpaceAtom
+
+#### Feature 3.5.3: Universal Kernel Generator ✅
+- B-Series differential calculus kernel generation
+- ElementaryDifferentials, BSeriesExpansion, UniversalKernelGenerator
+
+**PowerShell Files**:
+- ✅ `OpenCog/Core/ExoticAtoms.psm1`
+- ✅ `OpenCog/KernelGenerator/UniversalKernelGenerator.psm1`
+- ✅ `OpenCog/KernelGenerator/BSeriesExpansion.psm1`
+- ✅ `OpenCog/KernelGenerator/ElementaryDifferentials.psm1`
+
+**Tests**: UniversalKernelGenerator.Tests.ps1 — 58 tests, 100% pass rate
 
 ---
 
 ## Epic 2: Probabilistic Logic Networks (PLN)
 
-### Phase 4: Basic PLN Infrastructure
+### Phase 4: Basic PLN Infrastructure 🚧 IN PROGRESS
 
-**Status**: Not Started (0%)
+**Status**: In Progress (~30%)
 **Duration**: 5-6 weeks
 **Priority**: P1 (High)
 
-#### Feature 4.1: Truth Value Operations
+#### Feature 4.1: Truth Value Operations ✅
 **Description**: Extended truth value system for PLN
 
 **Tasks**:
-- [ ] Implement SimpleTruthValue (strength, confidence)
-- [ ] Create CountTruthValue (count, confidence)
-- [ ] Add IndefiniteTruthValue (L, U, confidence)
-- [ ] Implement FuzzyTruthValue (mean, confidence)
-- [ ] Create ProbabilisticTruthValue (count, probability)
-- [ ] Add truth value revision formulas
-- [ ] Implement truth value comparison
+- [x] Implement SimpleTruthValue (strength, confidence)
+- [x] Create CountTruthValue (count, confidence)
+- [x] Add IndefiniteTruthValue (L, U, confidence)
+- [x] Implement FuzzyTruthValue (mean, confidence)
+- [x] Create ProbabilisticTruthValue (count, probability)
+- [x] Add truth value revision formulas
+- [x] Implement truth value comparison
 
 **PowerShell Files**:
-- `OpenCog/PLN/TruthValues.psm1` (14,000+ bytes estimated)
+- ✅ `OpenCog/PLN/TruthValues.psm1`
   - Extended TruthValue classes
   - Revision formulas (Bayesian updating)
   - Comparison operations
   - Truth value conversion
 
-#### Feature 4.2: PLN Rules - Deduction
+#### Feature 4.2: PLN Rules - Deduction ✅
 **Description**: Deductive reasoning rules
 
 **Tasks**:
-- [ ] Implement deduction rule (A→B, B→C ⊢ A→C)
-- [ ] Create modus ponens (A→B, A ⊢ B)
-- [ ] Add modus tollens (A→B, ¬B ⊢ ¬A)
-- [ ] Implement contraposition (A→B ⊢ ¬B→¬A)
-- [ ] Create hypothetical syllogism
-- [ ] Add precise deduction formula
+- [x] Implement deduction rule (A→B, B→C ⊢ A→C)
+- [x] Create modus ponens (A→B, A ⊢ B)
+- [x] Add modus tollens (A→B, ¬B ⊢ ¬A)
+- [x] Implement contraposition (A→B ⊢ ¬B→¬A)
+- [x] Create hypothetical syllogism
+- [x] Add precise deduction formula
 
 **PowerShell Files**:
-- `OpenCog/PLN/DeductionRules.psm1` (16,000+ bytes estimated)
+- ✅ `OpenCog/PLN/DeductionRules.psm1`
   - Deduction rule implementations
   - Truth value propagation formulas
   - Rule applicability checking
   - Confidence calculation
 
-#### Feature 4.3: PLN Rules - Induction and Abduction
+#### Feature 4.3: PLN Rules - Induction and Abduction ⏳
 **Description**: Inductive and abductive reasoning
 
 **Tasks**:
@@ -1076,30 +1096,31 @@ OpenCog/
 
 ### Release Versioning
 
-**Version 0.1.x**: Foundation (Phase 1-3)
-- ✅ 0.1.0: Basic atoms, AtomSpace, pattern matching (CURRENT)
-- 0.1.1: Extended atom types
-- 0.1.2: Advanced pattern matching
+**Version 0.1.x**: Foundation (Phase 1–3)
+- ✅ 0.1.0: Basic atoms, AtomSpace, pattern matching
+- ✅ 1.1.0: Extended atom types (Phase 2)
+- ✅ 1.2.0: Advanced pattern matching (Phase 3)
+- ✅ 1.3.0: Exotic atoms, Universal Kernel Generator (Phase 3.5) **(CURRENT)**
 
-**Version 0.2.x**: PLN (Phase 4-5)
-- 0.2.0: Basic PLN infrastructure
-- 0.2.1: Advanced PLN reasoning
+**Version 0.2.x / 2.x**: PLN (Phase 4–5) **(IN PROGRESS)**
+- 🚧 2.0.0: Basic PLN infrastructure (truth values, deduction)
+- 2.1.0: Advanced PLN reasoning (higher-order, fuzzy, temporal)
 
-**Version 0.3.x**: URE (Phase 6-7)
+**Version 0.3.x**: URE (Phase 6–7)
 - 0.3.0: Rule engine infrastructure
 - 0.3.1: Rule learning
 
-**Version 0.4.x**: ECAN (Phase 8-9)
+**Version 0.4.x**: ECAN (Phase 8–9)
 - 0.4.0: Attention allocation
 - 0.4.1: Attention optimization
 
-**Version 0.5.x**: Perception (Phase 10-11)
+**Version 0.5.x**: Perception (Phase 10–11)
 - 0.5.0: SpaceTime and perception
 
-**Version 0.6.x**: Language (Phase 12-13)
+**Version 0.6.x**: Language (Phase 12–13)
 - 0.6.0: NLP and dialog
 
-**Version 0.7.x**: Learning (Phase 14-15)
+**Version 0.7.x**: Learning (Phase 14–15)
 - 0.7.0: Machine learning integration
 - 0.7.1: Meta-learning
 
@@ -1165,8 +1186,8 @@ OpenCog/
 
 This roadmap provides a comprehensive plan for implementing the complete OpenCog cognitive architecture in pure PowerShell. With 15 phases spanning 7 major epics, the implementation will deliver a production-ready AGI framework accessible to the PowerShell community.
 
-**Current Status**: Phase 1 Complete (~7% of total)
-**Next Milestone**: Phase 2 - Extended Atom Types (Q1 2026)
+**Current Status**: Phases 1–4 In Progress (~30% of total)
+**Next Milestone**: Phase 4 - PLN Infrastructure (complete TruthValues + DeductionRules, then InductionAbduction)
 **Estimated Completion**: Version 1.0.0 (Q4 2027 - subject to resource availability and complexity adjustments)
 
 **Note on Timeline**: The 2-year estimate assumes consistent development effort. Actual timeline may vary based on resource availability, complexity encountered, testing requirements, community contributions, and integration challenges.

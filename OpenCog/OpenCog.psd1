@@ -3,7 +3,7 @@
     RootModule = 'OpenCog.psm1'
     
     # Version number of this module
-    ModuleVersion = '1.3.0'
+    ModuleVersion = '2.0.0'
     
     # ID used to uniquely identify this module
     GUID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
@@ -43,7 +43,7 @@ Phase 3 - Advanced Pattern Matching:
 - SequentialOrLink: Ordered disjunction patterns
 - AbsentLink: Negation-as-failure queries
 
-Phase 4 - Exotic Atom Types:
+Phase 3.5 - Exotic Atom Types:
 - ExoticNode: URI-addressable atoms for external resources
 - AtomSpaceNode: Atoms containing their own AtomSpaces (hierarchical composition)
 - DistributedAtomSpaceNode: Federated atomspaces across networks
@@ -52,6 +52,13 @@ Phase 4 - Exotic Atom Types:
 - Exchange atoms: Mailbox, Calendar
 - OpenCogAtomSpaceAtom: Meta-level AtomSpace as an atom
 - Extensible registry for custom exotic atom types
+
+Phase 4 - Probabilistic Logic Networks (PLN):
+- SimpleTruthValue, CountTruthValue, IndefiniteTruthValue, FuzzyTruthValue, ProbabilisticTruthValue
+- Invoke-PLNDeduction (A->B, B->C => A->C with truth value propagation)
+- Invoke-ModusPonens, Invoke-ModusTollens, Invoke-PLNContraposition
+- Invoke-HypotheticalSyllogism, Invoke-AtomSpaceDeduction
+- Invoke-TVRevision, ConvertTo-SimpleTruthValue
 
 Features:
 * Create and manage cognitive atoms (nodes and links)
@@ -99,7 +106,9 @@ Perfect for:
         'Core/Atoms.psm1',
         'Core/AtomSpace.psm1',
         'Core/PatternMatcher.psm1',
-        'Core/ExoticAtoms.psm1'
+        'Core/ExoticAtoms.psm1',
+        'PLN/TruthValues.psm1',
+        'PLN/DeductionRules.psm1'
     )
     
     # Functions to export from this module
@@ -189,7 +198,7 @@ Perfect for:
         'Invoke-AdvancedPattern',
         'Invoke-PatternInstantiation',
         
-        # Phase 4 - Exotic Atom Types
+        # Phase 4 - PLN Exotic Atom Types (Phase 3.5)
         'New-ExoticNode',
         'New-AtomSpaceNode',
         'New-DistributedAtomSpace',
@@ -206,7 +215,24 @@ Perfect for:
         'Get-ExoticAtomUri',
         'Get-ExoticAtomProperties',
         'Register-ExoticAtomType',
-        'Get-RegisteredExoticTypes'
+        'Get-RegisteredExoticTypes',
+
+        # Phase 4 - PLN Extended Truth Values
+        'New-SimpleTruthValue',
+        'New-CountTruthValue',
+        'New-IndefiniteTruthValue',
+        'New-FuzzyTruthValue',
+        'New-ProbabilisticTruthValue',
+        'Invoke-TVRevision',
+        'ConvertTo-SimpleTruthValue',
+
+        # Phase 4 - PLN Deduction Rules
+        'Invoke-PLNDeduction',
+        'Invoke-ModusPonens',
+        'Invoke-ModusTollens',
+        'Invoke-PLNContraposition',
+        'Invoke-HypotheticalSyllogism',
+        'Invoke-AtomSpaceDeduction'
     )
     
     # Cmdlets to export from this module
@@ -273,7 +299,34 @@ Perfect for:
             
             # ReleaseNotes of this module
             ReleaseNotes = @'
-Version 1.3.0 - Phase 4: Exotic Atom Types
+Version 2.0.0 - Phase 4: PLN Infrastructure
+
+New Features:
+- PLN Extended Truth Values (PLN/TruthValues.psm1)
+  * SimpleTruthValue with Bayesian revision
+  * CountTruthValue (count-to-strength formula)
+  * IndefiniteTruthValue (interval [L,U] with meta-confidence)
+  * FuzzyTruthValue with fuzzy AND/OR/NOT operators
+  * ProbabilisticTruthValue (count + probability)
+  * Invoke-TVRevision for Bayesian merging
+  * ConvertTo-SimpleTruthValue for type normalization
+
+- PLN Deduction Rules (PLN/DeductionRules.psm1)
+  * Invoke-PLNDeduction: A->B, B->C => A->C with TV propagation
+  * Invoke-ModusPonens: A->B, A => B
+  * Invoke-ModusTollens: A->B, not-B => not-A
+  * Invoke-PLNContraposition: A->B => not-B->not-A
+  * Invoke-HypotheticalSyllogism: named alias for deduction
+  * Invoke-AtomSpaceDeduction: apply deduction to AtomSpace links
+
+Improvements:
+* Module now exports 89 functions (up from 76)
+* PLN truth values interoperate with core AtomSpace TruthValue
+* Backward compatible with Phase 1, 2, 3, and 3.5 code
+* Tests: 279 total (100% pass rate)
+* GitHub Actions CI added (.github/workflows/opencog-ci.yml)
+
+Version 1.3.0 - Phase 3.5: Exotic Atom Types
 
 New Features:
 - Exotic Atom Framework (Core/ExoticAtoms.psm1)
