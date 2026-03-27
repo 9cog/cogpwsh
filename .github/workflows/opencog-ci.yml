@@ -1,0 +1,112 @@
+name: OpenCog CI
+
+on:
+  push:
+    branches: [ "**" ]
+    paths:
+      - 'OpenCog/**'
+      - '.github/workflows/opencog-ci.yml'
+  pull_request:
+    branches: [ "**" ]
+    paths:
+      - 'OpenCog/**'
+      - '.github/workflows/opencog-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: Unit Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Phase 1 tests (Core Atoms/AtomSpace/PatternMatcher)
+        shell: pwsh
+        run: |
+          $result = & "${{ github.workspace }}/OpenCog/Tests/OpenCog.Tests.ps1"
+          exit $LASTEXITCODE
+
+      - name: Run Phase 2 tests (Extended Atom Types)
+        shell: pwsh
+        run: |
+          $result = & "${{ github.workspace }}/OpenCog/Tests/Phase2Extended.Tests.ps1"
+          exit $LASTEXITCODE
+
+      - name: Run Phase 3 tests (Advanced Pattern Matching)
+        shell: pwsh
+        run: |
+          $result = & "${{ github.workspace }}/OpenCog/Tests/Phase3.Tests.ps1"
+          exit $LASTEXITCODE
+
+      - name: Run Phase 3.5 tests (Universal Kernel Generator)
+        shell: pwsh
+        run: |
+          $result = & "${{ github.workspace }}/OpenCog/Tests/UniversalKernelGenerator.Tests.ps1"
+          exit $LASTEXITCODE
+
+      - name: Run Phase 4 tests (PLN Infrastructure)
+        shell: pwsh
+        run: |
+          $result = & "${{ github.workspace }}/OpenCog/Tests/Phase4PLN.Tests.ps1"
+          exit $LASTEXITCODE
+
+  module-import:
+    name: Module Import Check (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify module imports and function exports
+        shell: pwsh
+        run: |
+          Import-Module "${{ github.workspace }}/OpenCog/OpenCog.psd1" -Force
+          $exported = (Get-Module OpenCog).ExportedFunctions.Keys
+          Write-Host "Exported functions: $($exported.Count)"
+          if ($exported.Count -lt 89) {
+            Write-Error "Expected at least 89 exported functions, got $($exported.Count)"
+            exit 1
+          }
+          Write-Host "Module import: OK"
+
+  static-analysis:
+    name: Static Analysis (PSScriptAnalyzer)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+
+      - name: Run PSScriptAnalyzer on OpenCog modules
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer -Path "${{ github.workspace }}/OpenCog" `
+            -Recurse -Severity Error,Warning -ExcludeRule PSAvoidUsingWriteHost
+          if ($results) {
+            $results | Format-Table -AutoSize
+            $errors = $results | Where-Object { $_.Severity -eq 'Error' }
+            if ($errors) {
+              Write-Error "PSScriptAnalyzer found $($errors.Count) error(s)"
+              exit 1
+            }
+            Write-Warning "PSScriptAnalyzer found $($results.Count) warning(s) (non-blocking)"
+          } else {
+            Write-Host "PSScriptAnalyzer: No issues found"
+          }

@@ -9,24 +9,31 @@
     - Pattern Matching: Query and unification engine
     - Truth Values: Probabilistic truth value system
     - Extended Atom Types: Advanced links, type system, value atoms (Phase 2)
-    - Exotic Atoms: Domain-specific and hierarchical atom types (Phase 4)
+    - Advanced Pattern Matching: GetLink, BindLink, SatisfactionLink, etc. (Phase 3)
+    - Exotic Atoms: Domain-specific and hierarchical atom types (Phase 3.5)
+    - PLN: Probabilistic Logic Networks — extended truth values and deduction rules (Phase 4)
     
 .NOTES
     Author: OpenCog PowerShell Project
-    Version: 1.3.0 (Phase 4 - Exotic Atoms)
+    Version: 2.0.0 (Phase 4 - PLN Infrastructure)
     
 .LINK
     https://opencog.org
 #>
 
 # Import core modules
-$CorePath = Join-Path $PSScriptRoot "Core"
+$CorePath    = Join-Path $PSScriptRoot "Core"
+$PLNPath     = Join-Path $PSScriptRoot "PLN"
 
 # Core modules (Phase 1 + Phase 2 + Phase 3 integrated)
 Import-Module (Join-Path $CorePath "Atoms.psm1") -Force
 Import-Module (Join-Path $CorePath "AtomSpace.psm1") -Force
 Import-Module (Join-Path $CorePath "PatternMatcher.psm1") -Force
 Import-Module (Join-Path $CorePath "ExoticAtoms.psm1") -Force
+
+# PLN modules (Phase 4)
+Import-Module (Join-Path $PLNPath "TruthValues.psm1") -Force
+Import-Module (Join-Path $PLNPath "DeductionRules.psm1") -Force
 
 # Re-export all functions from core modules
 $ExportedFunctions = @(
@@ -115,7 +122,7 @@ $ExportedFunctions = @(
     'Invoke-AdvancedPattern',
     'Invoke-PatternInstantiation',
     
-    # Phase 4 - Exotic Atom Types
+    # Phase 3.5 - Exotic Atom Types
     'New-ExoticNode',
     'New-AtomSpaceNode',
     'New-DistributedAtomSpace',
@@ -132,7 +139,24 @@ $ExportedFunctions = @(
     'Get-ExoticAtomUri',
     'Get-ExoticAtomProperties',
     'Register-ExoticAtomType',
-    'Get-RegisteredExoticTypes'
+    'Get-RegisteredExoticTypes',
+
+    # Phase 4 - PLN Extended Truth Values
+    'New-SimpleTruthValue',
+    'New-CountTruthValue',
+    'New-IndefiniteTruthValue',
+    'New-FuzzyTruthValue',
+    'New-ProbabilisticTruthValue',
+    'Invoke-TVRevision',
+    'ConvertTo-SimpleTruthValue',
+
+    # Phase 4 - PLN Deduction Rules
+    'Invoke-PLNDeduction',
+    'Invoke-ModusPonens',
+    'Invoke-ModusTollens',
+    'Invoke-PLNContraposition',
+    'Invoke-HypotheticalSyllogism',
+    'Invoke-AtomSpaceDeduction'
 )
 
 Export-ModuleMember -Function $ExportedFunctions
@@ -142,5 +166,6 @@ Write-Verbose "OpenCog PowerShell module loaded"
 Write-Verbose "Core components: Atoms, AtomSpace, PatternMatcher, ExoticAtoms"
 Write-Verbose "Phase 2 features: Advanced Links, Type System, Value Atoms (Extended)"
 Write-Verbose "Phase 3 features: Advanced Pattern Matching (GetLink, BindLink, etc.)"
-Write-Verbose "Phase 4 features: Exotic Atoms (GitHub, Azure, Exchange, Distributed)"
+Write-Verbose "Phase 3.5 features: Exotic Atoms (GitHub, Azure, Exchange, Distributed)"
+Write-Verbose "Phase 4 features: PLN TruthValues + Deduction Rules"
 Write-Verbose "Total functions exported: $($ExportedFunctions.Count)"
