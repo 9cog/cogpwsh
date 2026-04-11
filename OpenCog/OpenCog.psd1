@@ -3,7 +3,7 @@
     RootModule = 'OpenCog.psm1'
     
     # Version number of this module
-    ModuleVersion = '2.0.0'
+    ModuleVersion = '2.1.0'
     
     # ID used to uniquely identify this module
     GUID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
@@ -108,7 +108,10 @@ Perfect for:
         'Core/PatternMatcher.psm1',
         'Core/ExoticAtoms.psm1',
         'PLN/TruthValues.psm1',
-        'PLN/DeductionRules.psm1'
+        'PLN/DeductionRules.psm1',
+        'PLN/InductionAbduction.psm1',
+        'PLN/HigherOrderInference.psm1',
+        'PLN/TemporalReasoning.psm1'
     )
     
     # Functions to export from this module
@@ -232,7 +235,33 @@ Perfect for:
         'Invoke-ModusTollens',
         'Invoke-PLNContraposition',
         'Invoke-HypotheticalSyllogism',
-        'Invoke-AtomSpaceDeduction'
+        'Invoke-AtomSpaceDeduction',
+
+        # Phase 5 - PLN Induction and Abduction
+        'Invoke-PLNInduction',
+        'Invoke-PLNAbduction',
+        'Invoke-PLNInversion',
+        'Invoke-PLNAndIntroduction',
+        'Invoke-PLNOrIntroduction',
+        'Invoke-PLNNotIntroduction',
+
+        # Phase 5 - PLN Higher-Order Inference
+        'Invoke-InheritanceToSimilarity',
+        'Invoke-SimilarityToInheritance',
+        'Invoke-IntensionalInheritance',
+        'Invoke-ExtensionalInheritance',
+        'Invoke-AttractorRule',
+        'Invoke-SymmetricSimilarity',
+        'Invoke-CombinedInheritance',
+
+        # Phase 5 - Temporal Reasoning
+        'New-TemporalInterval',
+        'New-EventAtom',
+        'Get-AllenRelation',
+        'Get-AllAllenRelations',
+        'Invoke-TemporalDeduction',
+        'Invoke-TemporalProjection',
+        'Test-TemporalOverlap'
     )
     
     # Cmdlets to export from this module

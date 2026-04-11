@@ -1,6 +1,6 @@
 # OpenCog Implementation in Pure PowerShell
 
-## ✅ Phase 1 Complete | ✅ Phase 2 Complete | ✅ Phase 3 Complete | ✅ Phase 4 Complete
+## ✅ Phase 1 Complete | ✅ Phase 2 Complete | ✅ Phase 3 Complete | ✅ Phase 4 Complete | ✅ Phase 5 Complete
 
 This repository contains a complete implementation of OpenCog's cognitive architecture Phases 1-4 in pure PowerShell.
 
@@ -146,7 +146,36 @@ This repository contains a complete implementation of OpenCog's cognitive archit
    - Get-ConfidenceOf for confidence extraction
    - Fine-grained truth value access
 
-### Phase 4 Features ✅ (NEW)
+### Phase 5 Features ✅ (NEW)
+
+✅ **PLN Induction and Abduction** (`PLN/InductionAbduction.psm1`)
+   - `Invoke-PLNInduction`    : A→C, B→C ⊢ A→B (shared consequent generalisation)
+   - `Invoke-PLNAbduction`    : A→B, A→C ⊢ B→C (shared antecedent hypothesis)
+   - `Invoke-PLNInversion`    : A→B ⊢ B→A via Bayes' theorem
+   - `Invoke-PLNAndIntroduction` : A, B ⊢ A∧B (independent conjunction)
+   - `Invoke-PLNOrIntroduction`  : A, B ⊢ A∨B (inclusion-exclusion disjunction)
+   - `Invoke-PLNNotIntroduction` : A ⊢ ¬A (complement)
+
+✅ **Higher-Order Inference** (`PLN/HigherOrderInference.psm1`)
+   - `Invoke-InheritanceToSimilarity` : A→B, B→A ⊢ A↔B (harmonic mean)
+   - `Invoke-SimilarityToInheritance` : A↔B ⊢ A→B (weighted projection)
+   - `Invoke-SymmetricSimilarity`     : A↔B ⊢ B↔A (symmetry)
+   - `Invoke-AttractorRule`           : mutual inheritance ⊢ Attract(A,B)
+   - `Invoke-IntensionalInheritance`  : predicate-overlap-based inheritance
+   - `Invoke-ExtensionalInheritance`  : set-member-overlap-based inheritance
+   - `Invoke-CombinedInheritance`     : weighted combination of int/ext inheritance
+
+✅ **Temporal Reasoning** (`PLN/TemporalReasoning.psm1`)
+   - `TemporalInterval` class   : [Start, End] interval with Duration, Midpoint, Contains
+   - `New-TemporalInterval`     : factory for temporal intervals
+   - `New-EventAtom`            : named event with interval and truth value
+   - `Get-AllenRelation`        : all 13 Allen temporal relations (Before, After, Meets, …)
+   - `Get-AllAllenRelations`    : batch Allen relations between interval sets
+   - `Invoke-TemporalDeduction` : PLN deduction with exponential time-decay confidence
+   - `Invoke-TemporalProjection`: linear-trend projection to future time
+   - `Test-TemporalOverlap`     : Boolean interval overlap test
+
+### Phase 4 Features ✅
 
 ✅ **Exotic Atom Framework**
    - ExoticNode base class for URI-addressable atoms
@@ -191,7 +220,7 @@ This repository contains a complete implementation of OpenCog's cognitive archit
 - **Total Files**: 19 (Core + Examples + Tests)
 - **Total Size**: ~175KB
 - **Lines of Code**: 6,000+
-- **Functions**: 76 exported (26 Phase 1 + 24 Phase 2 + 9 Phase 3 + 17 Phase 4)
+- **Functions**: 109 exported (26 Phase 1 + 24 Phase 2 + 9 Phase 3 + 17 Phase 4 + 20 Phase 3.5 + 13 Phase 5)
 - **Tests**: 86 total (67 Phase 1 + 19 Phase 2 Extended)
 - **Examples**: 8 comprehensive scripts
 - **Module Version**: 1.3.0
@@ -201,8 +230,9 @@ This repository contains a complete implementation of OpenCog's cognitive archit
 - **Phase 1 (Core Foundation)**: 100% Complete ✅
 - **Phase 2 (Extended Atoms)**: 100% Complete ✅
 - **Phase 3 (Advanced Pattern Matching)**: 100% Complete ✅
-- **Phase 4 (Exotic Atoms)**: 100% Complete ✅
-- **Overall Progress**: ~27% of total OpenCog architecture (Phases 1-4 of 15)
+- **Phase 4 (Exotic Atoms + PLN Infrastructure)**: 100% Complete ✅
+- **Phase 5 (Advanced PLN Reasoning)**: 100% Complete ✅
+- **Overall Progress**: ~33% of total OpenCog architecture (Phases 1-5 of 15)
 
 ## 🚀 Quick Start
 

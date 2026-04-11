@@ -31,9 +31,14 @@ Import-Module (Join-Path $CorePath "AtomSpace.psm1") -Force
 Import-Module (Join-Path $CorePath "PatternMatcher.psm1") -Force
 Import-Module (Join-Path $CorePath "ExoticAtoms.psm1") -Force
 
-# PLN modules (Phase 4)
+# PLN modules (Phase 4 - Basic PLN Infrastructure)
 Import-Module (Join-Path $PLNPath "TruthValues.psm1") -Force
 Import-Module (Join-Path $PLNPath "DeductionRules.psm1") -Force
+
+# PLN modules (Phase 5 - Advanced PLN Reasoning)
+Import-Module (Join-Path $PLNPath "InductionAbduction.psm1") -Force
+Import-Module (Join-Path $PLNPath "HigherOrderInference.psm1") -Force
+Import-Module (Join-Path $PLNPath "TemporalReasoning.psm1") -Force
 
 # Re-export all functions from core modules
 $ExportedFunctions = @(
@@ -156,7 +161,33 @@ $ExportedFunctions = @(
     'Invoke-ModusTollens',
     'Invoke-PLNContraposition',
     'Invoke-HypotheticalSyllogism',
-    'Invoke-AtomSpaceDeduction'
+    'Invoke-AtomSpaceDeduction',
+
+    # Phase 5 - PLN Induction and Abduction
+    'Invoke-PLNInduction',
+    'Invoke-PLNAbduction',
+    'Invoke-PLNInversion',
+    'Invoke-PLNAndIntroduction',
+    'Invoke-PLNOrIntroduction',
+    'Invoke-PLNNotIntroduction',
+
+    # Phase 5 - PLN Higher-Order Inference
+    'Invoke-InheritanceToSimilarity',
+    'Invoke-SimilarityToInheritance',
+    'Invoke-IntensionalInheritance',
+    'Invoke-ExtensionalInheritance',
+    'Invoke-AttractorRule',
+    'Invoke-SymmetricSimilarity',
+    'Invoke-CombinedInheritance',
+
+    # Phase 5 - Temporal Reasoning
+    'New-TemporalInterval',
+    'New-EventAtom',
+    'Get-AllenRelation',
+    'Get-AllAllenRelations',
+    'Invoke-TemporalDeduction',
+    'Invoke-TemporalProjection',
+    'Test-TemporalOverlap'
 )
 
 Export-ModuleMember -Function $ExportedFunctions
@@ -168,4 +199,5 @@ Write-Verbose "Phase 2 features: Advanced Links, Type System, Value Atoms (Exten
 Write-Verbose "Phase 3 features: Advanced Pattern Matching (GetLink, BindLink, etc.)"
 Write-Verbose "Phase 3.5 features: Exotic Atoms (GitHub, Azure, Exchange, Distributed)"
 Write-Verbose "Phase 4 features: PLN TruthValues + Deduction Rules"
+Write-Verbose "Phase 5 features: PLN Induction/Abduction, Higher-Order Inference, Temporal Reasoning"
 Write-Verbose "Total functions exported: $($ExportedFunctions.Count)"
